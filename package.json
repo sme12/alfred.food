@@ -1,0 +1,16 @@
+{
+  "name": "iamhungry",
+  "version": "2.0.0",
+  "description": "Family meal planner",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Vitalii Sazanov",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "devDependencies": {
+    "prettier": "3.7.4"
+  }
+}
