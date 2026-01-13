@@ -1,0 +1,120 @@
+{
+  "common": {
+    "appName": "iamhungry",
+    "generate": "Сгенерировать план",
+    "save": "Сохранить",
+    "regenerate": "Перегенерировать",
+    "copyPrompt": "Скопировать промпт",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "back": "Назад"
+  },
+  "navigation": {
+    "newPlan": "Новый план",
+    "createPlan": "Создать план"
+  },
+  "tabs": {
+    "plan": "План",
+    "shoppingList": "Список покупок"
+  },
+  "pagination": {
+    "week": "Неделя {number}",
+    "weekWithDates": "Неделя {number} ({dates})"
+  },
+  "emptyState": {
+    "title": "Пока нет сохранённых планов",
+    "description": "Создайте первый план питания на неделю"
+  },
+  "newPlanPage": {
+    "title": "Новый план"
+  },
+  "calendar": {
+    "title": "Расписание",
+    "persons": {
+      "vitalik": "Виталик",
+      "lena": "Лена"
+    },
+    "days": {
+      "mon": "Пн",
+      "tue": "Вт",
+      "wed": "Ср",
+      "thu": "Чт",
+      "fri": "Пт",
+      "sat": "Сб",
+      "sun": "Вс"
+    },
+    "meals": {
+      "breakfast": "Завтрак",
+      "lunch": "Обед",
+      "dinner": "Ужин"
+    },
+    "slotHint": "Клик = смена: Полноценно → Кофе → Пропуск"
+  },
+  "conditions": {
+    "title": "Особые условия",
+    "placeholder": "Не использовать блюда: ...\nВ холодильнике есть: ...\nХочется: ..."
+  },
+  "result": {
+    "mealPlan": "План питания",
+    "shoppingList": "Список покупок",
+    "minutes": "{time} мин"
+  },
+  "cuisines": {
+    "title": "Предпочитаемые кухни",
+    "eastern-european": "Восточно-европейская",
+    "asian": "Азиатская",
+    "mexican": "Мексиканская",
+    "american": "Американская",
+    "italian": "Итальянская",
+    "mediterranean": "Средиземноморская",
+    "japanese": "Японская",
+    "thai": "Тайская",
+    "georgian": "Грузинская",
+    "scandinavian": "Скандинавская"
+  },
+  "categories": {
+    "dairy": "Молочные продукты",
+    "meat": "Мясо / Рыба",
+    "produce": "Овощи / Фрукты",
+    "pantry": "Бакалея",
+    "frozen": "Заморозка",
+    "bakery": "Хлеб / Выпечка",
+    "condiments": "Соусы / Приправы"
+  },
+  "shoppingList": {
+    "showUnchecked": "Только некупленное",
+    "showAll": "Показать всё",
+    "copyUnchecked": "Скопировать список",
+    "delete": "Удалить",
+    "collapse": "Свернуть",
+    "expand": "Развернуть"
+  },
+  "loading": {
+    "plans": "Загружаем планы...",
+    "generating": "Claude думает над вашим планом...",
+    "saving": "Сохраняем...",
+    "syncing": "Синхронизация..."
+  },
+  "errors": {
+    "generation": "Ошибка генерации плана",
+    "invalidResponse": "Невалидный ответ от Claude",
+    "unknown": "Неизвестная ошибка",
+    "somethingWentWrong": "Что-то пошло не так",
+    "tryAgainOrRefresh": "Попробуйте ещё раз или обновите страницу",
+    "tryAgain": "Попробовать снова",
+    "goHome": "На главную",
+    "back": "Назад",
+    "planCreationError": "Ошибка создания плана",
+    "planCreationErrorDescription": "Не удалось загрузить форму создания плана. Попробуйте обновить страницу.",
+    "pageNotFound": "Страница не найдена"
+  },
+  "prompt": {
+    "role": "РОЛЬ",
+    "roleDescription": "Ты — планировщик питания для семьи из {peopleCount} человек в Финляндии.",
+    "mealStructure": "СТРУКТУРА ПИТАНИЯ",
+    "restrictions": "ОГРАНИЧЕНИЯ ПО ПРОДУКТАМ",
+    "specialConditions": "ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ",
+    "outputFormat": "ФОРМАТ ВЫВОДА",
+    "responseLanguage": "Все названия блюд и ингредиентов — на русском языке."
+  }
+}
