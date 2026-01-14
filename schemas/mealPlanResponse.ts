@@ -51,14 +51,48 @@ export const ShoppingTripSchema = z.object({
 });
 export type ShoppingTrip = z.infer<typeof ShoppingTripSchema>;
 
-// Full response from Claude
+// ============================================
+// Step 1: Meal Plan Only (without shopping list)
+// ============================================
+export const MealPlanOnlyResponseSchema = z.object({
+  weekPlan: z.array(DayPlanSchema),
+});
+export type MealPlanOnlyResponse = z.infer<typeof MealPlanOnlyResponseSchema>;
+
+// Parse meal plan response (step 1)
+export function parseMealPlanOnlyResponse(
+  data: unknown
+): MealPlanOnlyResponse | null {
+  const result = MealPlanOnlyResponseSchema.safeParse(data);
+  return result.success ? result.data : null;
+}
+
+// ============================================
+// Step 2: Shopping List (after plan is confirmed)
+// ============================================
+export const ShoppingListResponseSchema = z.object({
+  shoppingTrips: z.array(ShoppingTripSchema),
+});
+export type ShoppingListResponse = z.infer<typeof ShoppingListResponseSchema>;
+
+// Parse shopping list response (step 2)
+export function parseShoppingListResponse(
+  data: unknown
+): ShoppingListResponse | null {
+  const result = ShoppingListResponseSchema.safeParse(data);
+  return result.success ? result.data : null;
+}
+
+// ============================================
+// Combined: Full response (for persisted plans)
+// ============================================
 export const MealPlanResponseSchema = z.object({
   weekPlan: z.array(DayPlanSchema),
   shoppingTrips: z.array(ShoppingTripSchema),
 });
 export type MealPlanResponse = z.infer<typeof MealPlanResponseSchema>;
 
-// Parse response
+// Parse combined response
 export function parseMealPlanResponse(data: unknown): MealPlanResponse | null {
   const result = MealPlanResponseSchema.safeParse(data);
   return result.success ? result.data : null;
