@@ -35,7 +35,7 @@ Run a single test file: `pnpm test utils/weekNumber.test.ts`
 ### Directory Structure
 
 - `app/` - Next.js App Router pages and layouts
-- `lib/` - Shared utilities (Redis client in `redis.ts`)
+- `lib/` - Shared utilities (Redis client in `redis.ts`, auth helpers in `auth.ts`)
 - `schemas/` - Zod schemas defining domain types:
   - `appState.ts` - User input state (schedules, cuisines, conditions)
   - `mealPlanResponse.ts` - AI response types (meals, shopping lists)
@@ -43,6 +43,12 @@ Run a single test file: `pnpm test utils/weekNumber.test.ts`
 - `config/defaults.ts` - App constants (cuisines, meal rules, banned ingredients, schedule defaults)
 - `utils/` - Pure utility functions with tests
 - `messages/` - i18n translation files (ru.json)
+
+### Development Auth Bypass
+
+Set `BYPASS_AUTH=true` in `.env.local` to skip Clerk auth. Never enable in production.
+
+- `getAuthUserId()` in `lib/auth.ts` - Use this to get current user ID. Returns `DEV_USER_ID` ("dev-user") when bypass enabled, otherwise calls Clerk's `auth()`.
 
 ### Key Patterns
 

@@ -4,7 +4,7 @@ const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
 
 // Next.js 16 uses named 'proxy' export instead of default export
 export const proxy = clerkMiddleware(async (auth, request) => {
-  if (!isPublicRoute(request)) {
+  if (process.env.BYPASS_AUTH !== "true" && !isPublicRoute(request)) {
     await auth.protect();
   }
 });

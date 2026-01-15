@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { getAuthUserId } from "@/lib/auth";
 import { getRedis, PLAN_INDEX_KEY } from "@/lib/redis";
 import type { PlanListItem } from "@/schemas/persistedPlan";
 import { getWeekInfoByKey } from "@/utils/weekNumber";
@@ -31,7 +31,7 @@ async function getPlans(userId: string): Promise<PlanListItem[]> {
 }
 
 export default async function Home() {
-  const { userId } = await auth();
+  const userId = await getAuthUserId();
 
   // If not authenticated, show empty state (will redirect via middleware)
   if (!userId) {

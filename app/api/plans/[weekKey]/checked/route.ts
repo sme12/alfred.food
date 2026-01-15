@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { getAuthUserId } from "@/lib/auth";
 import { getRedis, KV_PREFIX } from "@/lib/redis";
 import { z } from "zod";
 
@@ -13,7 +13,7 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ weekKey: string }> }
 ) {
-  const { userId } = await auth();
+  const userId = await getAuthUserId();
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -43,7 +43,7 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ weekKey: string }> }
 ) {
-  const { userId } = await auth();
+  const userId = await getAuthUserId();
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

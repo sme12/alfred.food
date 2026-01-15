@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { getAuthUserId } from "@/lib/auth";
 import { getRedis, PLAN_INDEX_KEY } from "@/lib/redis";
 import type { PlanListItem } from "@/schemas/persistedPlan";
 import { getWeekInfoByKey } from "@/utils/weekNumber";
 
 // GET /api/plans — List all saved plan keys for the current user
 export async function GET() {
-  const { userId } = await auth();
+  const userId = await getAuthUserId();
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
