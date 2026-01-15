@@ -1,20 +1,30 @@
+import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getRedis, PLAN_INDEX_KEY } from "@/lib/redis";
 import type { PlanListItem } from "@/schemas/persistedPlan";
 import { getWeekInfoByKey } from "@/utils/weekNumber";
-import { HomeClient } from "@/components/HomeClient";
 
-async function getPlans(userId: string): Promise<PlanListItem[]> {
+// GET /api/plans — List all saved plan keys for the current user
+export async function GET() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const redis = await getRedis();
     const userIndexKey = `${PLAN_INDEX_KEY}:${userId}`;
+
+    // Get all plan keys from the sorted set (sorted by score descending)
     const planKeys = await redis.zRange(userIndexKey, 0, -1, { REV: true });
 
     if (!planKeys || planKeys.length === 0) {
-      return [];
+      return NextResponse.json({ plans: [] });
     }
 
-    return planKeys.map((weekKey) => {
+    // Build list items with week info
+    const plans: PlanListItem[] = planKeys.map((weekKey) => {
       const info = getWeekInfoByKey(weekKey);
       return {
         weekKey,
@@ -24,21 +34,13 @@ async function getPlans(userId: string): Promise<PlanListItem[]> {
         dateRange: info.dateRange,
       };
     });
+
+    return NextResponse.json({ plans });
   } catch (error) {
     console.error("Failed to fetch plans:", error);
-    return [];
+    return NextResponse.json(
+      { error: "Failed to fetch plans" },
+      { status: 500 }
+    );
   }
-}
-
-export default async function Home() {
-  const { userId } = await auth();
-
-  // If not authenticated, show empty state (will redirect via middleware)
-  if (!userId) {
-    return <HomeClient initialWeeks={[]} />;
-  }
-
-  const plans = await getPlans(userId);
-
-  return <HomeClient initialWeeks={plans} />;
 }

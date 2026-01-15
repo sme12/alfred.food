@@ -540,7 +540,7 @@ Checks rate limit for user by identifier (IP or user ID).
 - `config/defaults.ts`
 - `utils/weekNumber.ts`
 
-### 3. Home Page (/) — View Plans
+### 3. ✅ Home Page (/) — View Plans
 
 - `MealPlanView`, `ShoppingListView`, `TabSwitcher`, `WeekPagination`
 - `EmptyState`, `StickyPanel`

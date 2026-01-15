@@ -27,7 +27,7 @@ Run a single test file: `pnpm test utils/weekNumber.test.ts`
 - **Next.js 16** with App Router and Turbopack
 - **Clerk** for authentication
 - **next-intl** for i18n (currently Russian only, locale hardcoded in `i18n/request.ts`)
-- **Vercel KV** for persistence
+- **Redis** (Upstash via Vercel Marketplace) for persistence — env var: `KV_REDIS_URL`
 - **AI SDK** with Anthropic provider for meal plan generation
 - **Zod** for schema validation
 - **Tailwind CSS v4**
@@ -35,10 +35,11 @@ Run a single test file: `pnpm test utils/weekNumber.test.ts`
 ### Directory Structure
 
 - `app/` - Next.js App Router pages and layouts
+- `lib/` - Shared utilities (Redis client in `redis.ts`)
 - `schemas/` - Zod schemas defining domain types:
   - `appState.ts` - User input state (schedules, cuisines, conditions)
   - `mealPlanResponse.ts` - AI response types (meals, shopping lists)
-  - `persistedPlan.ts` - Saved plan format for Vercel KV
+  - `persistedPlan.ts` - Saved plan format for Redis
 - `config/defaults.ts` - App constants (cuisines, meal rules, banned ingredients, schedule defaults)
 - `utils/` - Pure utility functions with tests
 - `messages/` - i18n translation files (ru.json)
