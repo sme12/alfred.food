@@ -23,6 +23,7 @@ Run a single test file: `pnpm test utils/weekNumber.test.ts`
 ## Architecture
 
 ### Tech Stack
+
 - **Next.js 16** with App Router and Turbopack
 - **Clerk** for authentication
 - **next-intl** for i18n (currently Russian only, locale hardcoded in `i18n/request.ts`)
@@ -32,6 +33,7 @@ Run a single test file: `pnpm test utils/weekNumber.test.ts`
 - **Tailwind CSS v4**
 
 ### Directory Structure
+
 - `app/` - Next.js App Router pages and layouts
 - `schemas/` - Zod schemas defining domain types:
   - `appState.ts` - User input state (schedules, cuisines, conditions)
@@ -42,13 +44,20 @@ Run a single test file: `pnpm test utils/weekNumber.test.ts`
 - `messages/` - i18n translation files (ru.json)
 
 ### Key Patterns
+
 - **Path alias**: Use `@/` for root imports (e.g., `@/schemas/appState`)
 - **Week keys**: Plans are keyed by ISO week format `YYYY-WW` (e.g., "2026-02")
 - **Shopping item IDs**: Deterministic hash-based IDs for preserving checkbox state across regenerations
 - **Schema parsing**: All external data is validated with Zod `safeParse()` before use
 
 ### Domain Model
+
 - Two family members (hardcoded as "vitalik" and "lena" in `config/defaults.ts`)
 - Weekly schedules with three meal slots per day: breakfast, lunch, dinner
 - Each slot has status: "full" (cook), "coffee" (light), or "skip"
 - Shopping lists split into trips with items categorized (dairy, meat, produce, etc.)
+
+## Plan Mode
+
+- Make the plan extremely concise. Sacrifice grammar for the sake of concision.
+- At the end of each plan, give me a list of unresolved questions to answer, if any.

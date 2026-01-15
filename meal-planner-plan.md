@@ -1,6 +1,6 @@
-# iamhungry — Веб-приложение для планирования питания
+# iamhungry — Meal Planning Web App
 
-> **Scope:** MVP — генерация плана питания с AI
+> **Scope:** MVP — AI-powered meal plan generation
 > **Storage:** Vercel KV (Redis)
 > **Stack:** Next.js + TypeScript + Tailwind CSS + Zod + AI SDK + Claude + Vercel KV + next-intl
 > **Auth:** Clerk
@@ -8,23 +8,23 @@
 
 ---
 
-## Текущее состояние проекта
+## Current Project State
 
-### ✅ Уже настроено
+### ✅ Already Configured
 
-| Что                 | Статус                                                  |
-| ------------------- | ------------------------------------------------------- |
-| **Package manager** | pnpm 10.28.0 (указан в `packageManager` в package.json) |
-| **Git репозиторий** | Инициализирован                                         |
-| **Prettier**        | Настроен (`.prettierrc`, `.prettierignore`)             |
-| **README.md**       | Базовый README с инструкциями по установке              |
-| **.gitignore**      | Настроен для Node.js/pnpm проекта                       |
+| Item                | Status                                            |
+| ------------------- | ------------------------------------------------- |
+| **Package manager** | pnpm 10.28.0 (specified in `packageManager`)      |
+| **Git repository**  | Initialized                                       |
+| **Prettier**        | Configured (`.prettierrc`, `.prettierignore`)     |
+| **README.md**       | Basic README with installation instructions       |
+| **.gitignore**      | Configured for Node.js/pnpm project               |
 
-### 📦 Установленные зависимости
+### 📦 Installed Dependencies
 
-- `prettier` — форматирование кода (devDependency)
+- `prettier` — code formatting (devDependency)
 
-### 🔜 Нужно установить/настроить
+### 🔜 Need to Install/Configure
 
 - Next.js + TypeScript
 - Tailwind CSS
@@ -36,3517 +36,666 @@
 
 ---
 
-## Упрощения для MVP
+## MVP Simplifications
 
-| Что            | Решение                                                                                                                                                                                                                 |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Участники      | Хардкод: Виталик + Лена                                                                                                                                                                                                 |
-| Кухни          | **Выбор в UI** (мультиселект): Восточно-европейская, Азиатская, Мексиканская, Американская, Итальянская, Средиземноморская, Японская, Тайская, Грузинская, Скандинавская. **Хардкод исключения:** индийская, непальская |
-| Время готовки  | Хардкод: 30-60 мин                                                                                                                                                                                                      |
-| Особые условия | Просто textarea (free text)                                                                                                                                                                                             |
+| Item               | Decision                                                                                                                                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Participants       | Hardcoded: Vitalik + Lena                                                                                                                                                                                             |
+| Cuisines           | **UI selection** (multiselect): Eastern European, Asian, Mexican, American, Italian, Mediterranean, Japanese, Thai, Georgian, Scandinavian. **Hardcoded exclusions:** Indian, Nepalese                               |
+| Cooking time       | Hardcoded: 30-60 min                                                                                                                                                                                                  |
+| Special conditions | Simple textarea (free text)                                                                                                                                                                                           |
 
-**Главный UI:** Календарь недели + выбор кухонь (мультиселект) + поле для особых условий
-
----
-
-## Аутентификация
-
-**Решение:** Clerk
-
-Аутентификация настроена через Clerk — современный auth-as-a-service провайдер.
-
-### ✅ Уже настроено
-
-- `@clerk/nextjs` установлен и сконфигурирован
-- `ClerkProvider` обёртывает приложение в `layout.tsx`
-- Middleware настроен для защиты роутов
-- Переменные окружения добавлены в `.env.local`
-
-### Основные компоненты
-
-- `<SignIn />` / `<SignUp />` — готовые формы авторизации
-- `<UserButton />` — кнопка профиля с меню
-- `auth()` / `currentUser()` — серверные хелперы для получения пользователя
-- `useUser()` / `useAuth()` — клиентские хуки
-
-### Преимущества
-
-- Защита от несанкционированного доступа к API (экономия на Claude API)
-- Синхронизация данных между устройствами (один аккаунт = одни данные)
-- Готовые UI-компоненты для авторизации
-- Поддержка OAuth (Google, GitHub и др.)
+**Main UI:** Week calendar + cuisine selection (multiselect) + special conditions field
 
 ---
 
-## Дизайн и стиль
+## Authentication
 
-**Тема:** Тёмная (Dark Mode)
+**Solution:** Clerk
 
-- Использовать тёмную цветовую схему по умолчанию
-- Tailwind CSS dark-классы как основные (bg-gray-900, text-gray-100, и т.д.)
-- Контрастные акцентные цвета для интерактивных элементов
-- Мягкие тени и границы для разделения секций
+Authentication is configured via Clerk — a modern auth-as-a-service provider.
+
+### ✅ Already Configured
+
+- `@clerk/nextjs` installed and configured
+- `ClerkProvider` wraps the app in `layout.tsx`
+- Middleware configured for route protection
+- Environment variables added to `.env.local`
+
+### Main Components
+
+- `<SignIn />` / `<SignUp />` — ready-made auth forms
+- `<UserButton />` — profile button with menu
+- `auth()` / `currentUser()` — server helpers for getting user
+- `useUser()` / `useAuth()` — client hooks
+
+### Benefits
+
+- Protection from unauthorized API access (saves on Claude API costs)
+- Data sync across devices (one account = one data set)
+- Ready-made UI components for auth
+- OAuth support (Google, GitHub, etc.)
 
 ---
 
-## Mobile-First подход
+## Design and Style
 
-**Приоритет:** Мобильные устройства (телефон — основной способ использования)
+**Theme:** Dark Mode
 
-### Принципы
+- Use dark color scheme by default
+- Tailwind CSS dark classes as primary (bg-gray-900, text-gray-100, etc.)
+- Contrasting accent colors for interactive elements
+- Soft shadows and borders for section separation
 
-- **Viewport-first:** Все компоненты сначала проектируются для ширины 320-428px
-- **Touch-friendly:** Минимальный размер тапабельных элементов — 44×44px (Apple HIG)
-- **Thumb zone:** Основные действия в нижней части экрана (зона большого пальца)
-- **Отзывчивость:** Немедленный визуальный feedback на все касания
-- **Breakpoints:** `sm:` (640px) → `md:` (768px) → `lg:` (1024px) — расширяем, не сужаем
+---
 
-### Tailwind конфигурация
+## Mobile-First Approach
 
-```css
-/* Базовые стили — мобильные, расширяем через sm:/md:/lg: */
-.button {
-  @apply w-full py-4 text-lg; /* Mobile: full width, большие тапы */
-  @apply sm:w-auto sm:py-2 sm:text-base; /* Desktop: компактнее */
-}
-```
+**Priority:** Mobile devices (phone is the primary use case)
 
-### Компоненты с фокусом на mobile
+### Principles
 
-| Компонент          | Mobile-оптимизация                                         |
+- **Viewport-first:** All components designed for 320-428px width first
+- **Touch-friendly:** Minimum tappable element size — 44×44px (Apple HIG)
+- **Thumb zone:** Main actions at bottom of screen (thumb-reachable zone)
+- **Responsiveness:** Immediate visual feedback on all touches
+- **Breakpoints:** `sm:` (640px) → `md:` (768px) → `lg:` (1024px) — expand, don't shrink
+
+### Mobile-Focused Components
+
+| Component          | Mobile optimization                                        |
 | ------------------ | ---------------------------------------------------------- |
-| `MealSlotCell`     | 48×48px минимум, ripple-эффект при тапе                    |
-| `CuisineSelector`  | Горизонтальный скролл чипсов вместо сетки                  |
-| `TabSwitcher`      | Sticky сверху, крупные табы на всю ширину                  |
-| `WeekPagination`   | Свайп-навигация между неделями                             |
-| `StickyPanel`      | Safe area padding для iPhone (env(safe-area-inset-bottom)) |
-| `ShoppingListView` | **Отдельная секция ниже**                                  |
-
-### Safe Areas (iOS)
-
-```tsx
-// layout.tsx
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-
-// StickyPanel.tsx
-<div className="pb-[env(safe-area-inset-bottom)]">
-  {/* кнопка "Новый план" */}
-</div>
-```
+| `MealSlotCell`     | 48×48px minimum, ripple effect on tap                      |
+| `CuisineSelector`  | Horizontal chip scroll instead of grid                     |
+| `TabSwitcher`      | Sticky at top, large full-width tabs                       |
+| `WeekPagination`   | Swipe navigation between weeks                             |
+| `StickyPanel`      | Safe area padding for iPhone (env(safe-area-inset-bottom)) |
+| `ShoppingListView` | **Separate section below**                                 |
 
 ---
 
-## Список покупок — Touch-оптимизация
+## Shopping List — Touch Optimization
 
-**Цель:** Идеальный UX при использовании одной рукой в магазине
+**Goal:** Perfect UX for one-handed use in the store
 
-### Размеры элементов
+### Element Sizes
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  ┌─────┐                                                    │
-│  │ ✓  │  Яйца — 6 шт                              [удалить] │  ← 56px высота
-│  │     │  для: омлет, тосты                                 │
-│  └─────┘                                                    │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────┐                                                    │
-│  │     │  Авокадо — 2 шт                                    │  ← 56px высота
-│  └─────┘                                                    │
-└─────────────────────────────────────────────────────────────┘
-        ↑
-    48×48px чекбокс
-```
+- Row height: 56px
+- Checkbox: 48×48px
 
-### Взаимодействия
+### Interactions
 
-| Жест              | Действие                        |
-| ----------------- | ------------------------------- |
-| **Тап по строке** | Отметить как купленное (toggle) |
-| **Свайп влево**   | Показать кнопку "Удалить"       |
+| Gesture          | Action                       |
+| ---------------- | ---------------------------- |
+| **Tap on row**   | Mark as purchased (toggle)   |
+| **Swipe left**   | Show "Delete" button         |
 
-### Свайп для удаления (Web)
+### Swipe to Delete (Web)
 
-Свайп работает в браузере через Touch Events API. Используем библиотеку `@use-gesture/react` (лёгкая, 3KB gzip):
+Swipe works in browser via Touch Events API. Using `@use-gesture/react` library (lightweight, 3KB gzip).
 
-```bash
-npm i @use-gesture/react
-```
+### Visual Feedback
 
-```tsx
-// components/SwipeableItem.tsx
-import { useSpring, animated } from "@react-spring/web";
-import { useDrag } from "@use-gesture/react";
+- Haptic feedback on iOS/Android via `navigator.vibrate(10)`
+- Scale animation on tap: `active:scale-[0.98]`
+- Color transition when marked
 
-const DELETE_THRESHOLD = -80; // px для показа кнопки удаления
+### Category Grouping
 
-function SwipeableShoppingItem({ item, onDelete, onToggle }: Props) {
-  const [{ x }, api] = useSpring(() => ({ x: 0 }));
+- Collapsible categories
+- Progress shown: "(2 of 5 purchased)"
 
-  const bind = useDrag(
-    ({ down, movement: [mx], cancel }) => {
-      // Только свайп влево
-      if (mx > 0) {
-        cancel();
-        return;
-      }
+### Checkbox State Persistence (Vercel KV)
 
-      if (down) {
-        // Следуем за пальцем (с ограничением)
-        api.start({ x: Math.max(mx, -100), immediate: true });
-      } else {
-        // Отпустили — решаем что делать
-        if (mx < DELETE_THRESHOLD) {
-          // Показываем кнопку удаления (фиксируем позицию)
-          api.start({ x: -80 });
-        } else {
-          // Возвращаем назад
-          api.start({ x: 0 });
-        }
-      }
-    },
-    { axis: "x", filterTaps: true },
-  );
+Checkbox state saved in Vercel KV for cross-device sync (phone in store ↔ laptop at home).
 
-  const handleDelete = () => {
-    // Анимация ухода + удаление
-    api.start({
-      x: -300,
-      onRest: () => onDelete(item.id),
-    });
-  };
+**KV Structure:** `meal-planner:checked:2026-02 → ["item-id-1", "item-id-2", ...]`
 
-  return (
-    <div className="relative overflow-hidden">
-      {/* Кнопка удаления (под элементом) */}
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-red-500 flex items-center justify-center">
-        <button onClick={handleDelete} className="text-white p-4">
-          🗑️
-        </button>
-      </div>
+**KV vs localStorage Benefits:**
 
-      {/* Свайпаемый элемент */}
-      <animated.div
-        {...bind()}
-        style={{ x, touchAction: "pan-y" }}
-        className="relative bg-gray-800 z-10"
-      >
-        <ShoppingItemRow item={item} onToggle={onToggle} />
-      </animated.div>
-    </div>
-  );
-}
-```
+- Cross-device sync (marked on phone → visible on laptop)
+- Data persists through browser clearing
+- State tied to plan, deleted together with it
 
-**Альтернатива без библиотек** (чистый CSS + JS):
+### Additional Touch Features
 
-```tsx
-// Простой вариант через CSS transform + touch events
-function SwipeableItem({ children, onDelete }: Props) {
-  const [offsetX, setOffsetX] = useState(0);
-  const [startX, setStartX] = useState(0);
-  const [showDelete, setShowDelete] = useState(false);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    const diff = e.touches[0].clientX - startX;
-    if (diff < 0) setOffsetX(Math.max(diff, -100));
-  };
-
-  const handleTouchEnd = () => {
-    if (offsetX < -50) {
-      setOffsetX(-80);
-      setShowDelete(true);
-    } else {
-      setOffsetX(0);
-      setShowDelete(false);
-    }
-  };
-
-  return (
-    <div className="relative overflow-hidden">
-      <div className="absolute right-0 inset-y-0 w-20 bg-red-500 flex items-center justify-center">
-        <button onClick={onDelete}>🗑️</button>
-      </div>
-      <div
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        style={{ transform: `translateX(${offsetX}px)` }}
-        className="relative bg-gray-800 transition-transform duration-150"
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
-```
-
-### Визуальный feedback
-
-```tsx
-// ShoppingItemRow.tsx
-function ShoppingItemRow({ item }: { item: ShoppingItem }) {
-  const [checked, setChecked] = useState(false);
-
-  const handleTap = () => {
-    // Haptic feedback на iOS/Android
-    if (navigator.vibrate) navigator.vibrate(10);
-    setChecked(!checked);
-  };
-
-  return (
-    <li
-      onClick={handleTap}
-      className={`
-        flex items-center gap-4 p-4 min-h-[56px]
-        rounded-xl transition-all duration-150
-        active:scale-[0.98] active:bg-gray-700/50
-        ${checked ? "bg-gray-800/30" : "bg-gray-800"}
-      `}
-    >
-      {/* Большой чекбокс */}
-      <div
-        className={`
-        w-7 h-7 rounded-lg border-2 flex items-center justify-center
-        transition-colors duration-150
-        ${checked ? "bg-green-500 border-green-500" : "border-gray-500"}
-      `}
-      >
-        {checked && <CheckIcon className="w-5 h-5 text-white" />}
-      </div>
-
-      {/* Текст */}
-      <div className="flex-1 min-w-0">
-        <span
-          className={`
-          text-base transition-all duration-150
-          ${checked ? "line-through text-gray-500" : "text-gray-100"}
-        `}
-        >
-          {item.name} — {item.amount}
-        </span>
-        {item.forMeal && (
-          <span className="block text-sm text-gray-500 truncate">
-            для: {item.forMeal}
-          </span>
-        )}
-      </div>
-    </li>
-  );
-}
-```
-
-### Группировка по категориям
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│  🥛 Молочные продукты                              [свернуть]│
-│  ─────────────────────────────────────────────────────────── │
-│  ┌─────┐                                                     │
-│  │ ✓  │  Яйца — 6 шт                                        │
-│  └─────┘                                                     │
-│  ┌─────┐                                                     │
-│  │     │  Сливки 20% — 200 мл                               │
-│  └─────┘                                                     │
-├──────────────────────────────────────────────────────────────┤
-│  🥬 Овощи / Фрукты                               [развернуть]│
-│  ─────────────────────────────────────────────────────────── │
-│  (2 из 5 куплено)                                            │
-└──────────────────────────────────────────────────────────────┘
-```
-
-### Сохранение состояния чекбоксов (Vercel KV)
-
-Состояние чекбоксов сохраняется в Vercel KV для синхронизации между устройствами (телефон в магазине ↔ ноутбук дома).
-
-**Структура в KV:**
-
-```
-meal-planner:checked:2026-02 → ["item-id-1", "item-id-2", ...]
-```
-
-**API Route:**
-
-```typescript
-// app/api/plans/[weekKey]/checked/route.ts
-import { kv } from "@vercel/kv";
-
-// GET — получить отмеченные товары
-export async function GET(
-  req: Request,
-  { params }: { params: { weekKey: string } },
-) {
-  const checked = await kv.get<string[]>(
-    `meal-planner:checked:${params.weekKey}`,
-  );
-  return Response.json({ checked: checked ?? [] });
-}
-
-// PUT — обновить отмеченные товары
-export async function PUT(
-  req: Request,
-  { params }: { params: { weekKey: string } },
-) {
-  const { checked } = await req.json();
-  await kv.set(`meal-planner:checked:${params.weekKey}`, checked);
-  return Response.json({ ok: true });
-}
-```
-
-**Клиентский хук с debounce:**
-
-```typescript
-// hooks/useShoppingChecked.ts
-import { useState, useEffect, useCallback } from "react";
-import { useDebouncedCallback } from "use-debounce";
-
-export function useShoppingChecked(planKey: string) {
-  const [checked, setChecked] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Загрузка при монтировании
-  useEffect(() => {
-    fetch(`/api/plans/${planKey}/checked`)
-      .then((res) => res.json())
-      .then((data) => {
-        setChecked(new Set(data.checked));
-        setIsLoading(false);
-      })
-      .catch(() => setIsLoading(false));
-  }, [planKey]);
-
-  // Сохранение с debounce (300ms) для оптимизации запросов
-  const saveToKV = useDebouncedCallback((checkedItems: Set<string>) => {
-    fetch(`/api/plans/${planKey}/checked`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ checked: [...checkedItems] }),
-    });
-  }, 300);
-
-  const toggle = useCallback(
-    (itemId: string) => {
-      setChecked((prev) => {
-        const next = new Set(prev);
-        if (next.has(itemId)) next.delete(itemId);
-        else next.add(itemId);
-        saveToKV(next);
-        return next;
-      });
-    },
-    [saveToKV],
-  );
-
-  return { checked, toggle, isLoading };
-}
-```
-
-**Преимущества KV vs localStorage:**
-
-- Синхронизация между устройствами (отметил на телефоне → видно на ноутбуке)
-- Данные не теряются при очистке браузера
-- Состояние привязано к плану, удаляется вместе с ним
-
-### Дополнительные touch-фичи
-
-- **Pull-to-refresh:** Обновить список (sync с KV)
-- **Sticky категории:** Заголовок категории остаётся видимым при скролле
-- **Floating action button:** "Скопировать непокупленное" — для отправки в мессенджер
-- **Фильтр:** Показать только некупленное / всё
-
-### Переводы для mobile UI
-
-```json
-// messages/ru.json (добавить)
-{
-  "shoppingList": {
-    "showUnchecked": "Только некупленное",
-    "showAll": "Показать всё",
-    "copyUnchecked": "Скопировать список",
-    "delete": "Удалить",
-    "collapse": "Свернуть",
-    "expand": "Развернуть"
-  }
-}
-```
+- **Pull-to-refresh:** Refresh list (sync with KV)
+- **Sticky categories:** Category header stays visible while scrolling
+- **Floating action button:** "Copy unpurchased" — for sending to messenger
+- **Filter:** Show only unpurchased / all
 
 ---
 
-## Интернационализация (next-intl)
+## Internationalization (next-intl)
 
-**Язык по умолчанию:** Русский (ru)
-**Архитектура:** Готова к расширению на 2+ языка
+**Default language:** Russian (ru)
+**Architecture:** Ready for 2+ language expansion
 
-### Установка
+### File Structure
 
-```bash
-npm i next-intl
-```
+- `messages/ru.json` — Russian translations (primary)
+- `messages/en.json` — English (future placeholder)
+- `i18n/request.ts` — Server Components configuration
+- `i18n/routing.ts` — Routing configuration (optional)
 
-### Структура файлов
+### Language Impact on Claude Prompt and Output
 
-```
-├── messages/
-│   └── ru.json              # Русские переводы (основной)
-│   └── en.json              # English (заготовка на будущее)
-│
-├── i18n/
-│   ├── request.ts           # Конфигурация для Server Components
-│   └── routing.ts           # Конфигурация роутинга (опционально)
-│
-├── app/
-│   └── [locale]/            # Динамический сегмент локали
-│       ├── layout.tsx
-│       └── page.tsx
-```
+UI language affects:
 
-### Конфигурация
+1. **Prompt** — instructions for Claude should be in user's language
+2. **Claude response** — dish names, ingredients in shopping list
 
-```typescript
-// i18n/request.ts
-import { getRequestConfig } from "next-intl/server";
+**Important:** For Russian UI, prompts are in Russian. Explicitly specify response language in prompt: "Все названия блюд и ингредиентов — на русском языке." (All dish and ingredient names in Russian.)
 
-export default getRequestConfig(async () => {
-  const locale = "ru"; // MVP: только русский
+### Expanding to Second Language (Future)
 
-  return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
-  };
-});
-```
-
-```typescript
-// next.config.ts
-import createNextIntlPlugin from "next-intl/plugin";
-
-const withNextIntl = createNextIntlPlugin();
-
-export default withNextIntl({
-  // остальная конфигурация
-});
-```
-
-### Файл переводов
-
-```json
-// messages/ru.json
-{
-  "common": {
-    "appName": "iamhungry",
-    "generate": "Сгенерировать план",
-    "save": "Сохранить",
-    "regenerate": "Перегенерировать",
-    "copyPrompt": "Скопировать промпт",
-    "loading": "Загрузка...",
-    "error": "Ошибка",
-    "back": "Назад"
-  },
-  "navigation": {
-    "newPlan": "Новый план",
-    "createPlan": "Создать план"
-  },
-  "tabs": {
-    "plan": "План",
-    "shoppingList": "Список покупок"
-  },
-  "pagination": {
-    "week": "Неделя {number}",
-    "weekWithDates": "Неделя {number} ({dates})"
-  },
-  "emptyState": {
-    "title": "Пока нет сохранённых планов",
-    "description": "Создайте первый план питания на неделю"
-  },
-  "newPlanPage": {
-    "title": "Новый план"
-  },
-  "calendar": {
-    "title": "Расписание",
-    "persons": {
-      "vitalik": "Виталик",
-      "lena": "Лена"
-    },
-    "days": {
-      "mon": "Пн",
-      "tue": "Вт",
-      "wed": "Ср",
-      "thu": "Чт",
-      "fri": "Пт",
-      "sat": "Сб",
-      "sun": "Вс"
-    },
-    "meals": {
-      "breakfast": "Завтрак",
-      "lunch": "Обед",
-      "dinner": "Ужин"
-    },
-    "slotHint": "Клик = смена: Полноценно → Кофе → Пропуск"
-  },
-  "conditions": {
-    "title": "Особые условия",
-    "placeholder": "Не использовать блюда: ...\nВ холодильнике есть: ...\nХочется: ..."
-  },
-  "result": {
-    "mealPlan": "План питания",
-    "shoppingList": "Список покупок",
-    "minutes": "{time} мин"
-  },
-  "cuisines": {
-    "title": "Предпочитаемые кухни",
-    "eastern-european": "Восточно-европейская",
-    "asian": "Азиатская",
-    "mexican": "Мексиканская",
-    "american": "Американская",
-    "italian": "Итальянская",
-    "mediterranean": "Средиземноморская",
-    "japanese": "Японская",
-    "thai": "Тайская",
-    "georgian": "Грузинская",
-    "scandinavian": "Скандинавская"
-  },
-  "categories": {
-    "dairy": "Молочные продукты",
-    "meat": "Мясо / Рыба",
-    "produce": "Овощи / Фрукты",
-    "pantry": "Бакалея",
-    "frozen": "Заморозка",
-    "bakery": "Хлеб / Выпечка",
-    "condiments": "Соусы / Приправы"
-  },
-  "errors": {
-    "generation": "Ошибка генерации плана",
-    "invalidResponse": "Невалидный ответ от Claude",
-    "unknown": "Неизвестная ошибка"
-  },
-  "prompt": {
-    "role": "РОЛЬ",
-    "roleDescription": "Ты — планировщик питания для семьи из {peopleCount} человек в Финляндии.",
-    "mealStructure": "СТРУКТУРА ПИТАНИЯ",
-    "restrictions": "ОГРАНИЧЕНИЯ ПО ПРОДУКТАМ",
-    "specialConditions": "ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ",
-    "outputFormat": "ФОРМАТ ВЫВОДА",
-    "responseLanguage": "Все названия блюд и ингредиентов — на русском языке."
-  }
-}
-```
-
-### Использование в компонентах
-
-```tsx
-// Server Component
-import { getTranslations } from "next-intl/server";
-
-export default async function MealPlanPage() {
-  const t = await getTranslations();
-
-  return <h1>{t("common.appName")}</h1>;
-}
-```
-
-```tsx
-// Client Component
-"use client";
-import { useTranslations } from "next-intl";
-
-function GenerateButton() {
-  const t = useTranslations("common");
-
-  return <button>{t("generate")}</button>;
-}
-```
-
-```tsx
-// С параметрами
-function MealCell({ time }: { time: number }) {
-  const t = useTranslations("result");
-
-  return <span>{t("minutes", { time })}</span>; // "35 мин"
-}
-```
-
-### Обновлённые компоненты (без хардкода)
-
-```tsx
-// components/MealPlanResult.tsx
-"use client";
-import { useTranslations } from "next-intl";
-import { Category } from "@/schemas/mealPlanResponse";
-
-const CATEGORY_EMOJI: Record<Category, string> = {
-  dairy: "🥛",
-  meat: "🥩",
-  produce: "🥬",
-  pantry: "🍝",
-  frozen: "❄️",
-  bakery: "🥖",
-  condiments: "🧂",
-};
-
-function ShoppingTripCard({ trip }: { trip: ShoppingTrip }) {
-  const t = useTranslations("categories");
-
-  return (
-    <div>
-      {Object.entries(byCategory).map(([category, items]) => (
-        <div key={category}>
-          <h4>
-            {CATEGORY_EMOJI[category as Category]} {t(category)}
-          </h4>
-          {/* ... */}
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
-```tsx
-// components/WeekCalendar.tsx
-"use client";
-import { useTranslations } from "next-intl";
-import { Day, Meal } from "@/schemas/appState";
-
-function WeekCalendar() {
-  const t = useTranslations("calendar");
-
-  const days: Day[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-  const meals: Meal[] = ["breakfast", "lunch", "dinner"];
-
-  return (
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          {meals.map((meal) => (
-            <th key={meal}>{t(`meals.${meal}`)}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {days.map((day) => (
-          <tr key={day}>
-            <td>{t(`days.${day}`)}</td>
-            {/* ... */}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-```
-
-### Влияние языка на промпт и выдачу Claude
-
-Язык UI влияет на:
-
-1. **Промпт** — инструкции для Claude должны быть на языке пользователя
-2. **Ответ Claude** — названия блюд, ингредиентов в shopping list
-
-```typescript
-// utils/promptBuilder.ts
-import { getTranslations } from "next-intl/server";
-
-export async function generatePrompt(
-  state: AppState,
-  locale: string,
-): Promise<string> {
-  const t = await getTranslations({ locale, namespace: "prompt" });
-
-  return `
-# ${t("role")}
-${t("roleDescription", { peopleCount: 2 })}
-
-# ${t("mealStructure")}
-${scheduleSection}
-
-# ${t("restrictions")}
-${restrictionsSection}
-
-# ${t("outputFormat")}
-${t("outputFormatDescription")}
-  `;
-}
-```
-
-```json
-// messages/ru.json (добавить секцию prompt)
-{
-  "prompt": {
-    "role": "РОЛЬ",
-    "roleDescription": "Ты — планировщик питания для семьи из {peopleCount} человек в Финляндии.",
-    "mealStructure": "СТРУКТУРА ПИТАНИЯ",
-    "restrictions": "ОГРАНИЧЕНИЯ ПО ПРОДУКТАМ",
-    "outputFormat": "ФОРМАТ ВЫВОДА",
-    "outputFormatDescription": "Верни ответ ТОЛЬКО в виде JSON...",
-    "responseLanguage": "Все названия блюд и ингредиентов — на русском языке."
-  }
-}
-```
-
-**Важно:** В промпте явно указываем язык ответа:
-
-```
-Все названия блюд и ингредиентов — на русском языке.
-```
-
-При добавлении английского:
-
-```json
-// messages/en.json
-{
-  "prompt": {
-    "responseLanguage": "All meal names and ingredients must be in English."
-  }
-}
-```
-
-### Расширение на второй язык (будущее)
-
-1. Создать `messages/en.json` с переводами (включая секцию `prompt`)
-2. Обновить `i18n/request.ts` для определения локали (cookie/header/path)
-3. Добавить переключатель языка в UI
-4. Передавать `locale` в `generatePrompt()`
-
-```typescript
-// i18n/request.ts (с поддержкой 2 языков)
-import { getRequestConfig } from "next-intl/server";
-import { cookies } from "next/headers";
-
-const locales = ["ru", "en"] as const;
-type Locale = (typeof locales)[number];
-
-export default getRequestConfig(async () => {
-  const cookieStore = await cookies();
-  const locale = (cookieStore.get("locale")?.value as Locale) || "ru";
-
-  return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
-  };
-});
-```
+1. Create `messages/en.json` with translations (including `prompt` section)
+2. Update `i18n/request.ts` for locale detection (cookie/header/path)
+3. Add language switcher in UI
+4. Pass `locale` to `generatePrompt()`
 
 ---
 
-## User Flow и роутинг
+## User Flow and Routing
 
-### Структура роутов
+### Route Structure
 
-```
-/              → Главная: просмотр текущего плана
-/new           → Создание нового плана (контролы + генерация)
-```
+- `/` → Home: view current plan
+- `/new` → Create new plan (controls + generation)
 
 ### Flow
 
-1. **Главная (`/`)** — просмотр сохранённого плана
-   - Показывает последний сохранённый план (или выбранную неделю)
-   - Два таба: "План" и "Список покупок"
-   - Пагинация между неделями (стрелки ◀ ▶)
-   - Номер недели в году для идентификации
-   - Если планов нет — empty state с кнопкой создать
+1. **Home (`/`)** — view saved plan
+   - Shows last saved plan (or selected week)
+   - Two tabs: "Plan" and "Shopping List"
+   - Pagination between weeks (arrows ◀ ▶)
+   - Week number for identification
+   - If no plans — empty state with create button
 
-2. **Новый план (`/new`)** — создание плана (ДВУХЭТАПНАЯ ГЕНЕРАЦИЯ)
-   - Календарь + выбор кухонь + особые условия
-   - **Этап 1: Генерация плана питания**
-     - Кнопка "Сгенерировать план"
-     - Превью плана (без списка покупок)
-     - Можно "Перегенерировать" сколько угодно раз
-     - Кнопка "Подтвердить план" → переход к этапу 2
-   - **Этап 2: Генерация списка покупок**
-     - Автоматически запускается после подтверждения плана
-     - Показывает превью списка покупок
-     - Кнопки "Сохранить" / "Вернуться к плану"
-   - После сохранения → редирект на `/`
+2. **New plan (`/new`)** — plan creation (TWO-STAGE GENERATION)
+   - Calendar + cuisine selection + special conditions
+   - **Stage 1: Meal Plan Generation**
+     - "Generate plan" button
+     - Plan preview (without shopping list)
+     - Can "Regenerate" unlimited times
+     - "Confirm plan" button → proceed to stage 2
+   - **Stage 2: Shopping List Generation**
+     - Automatically starts after plan confirmation
+     - Shows shopping list preview
+     - "Save" / "Back to plan" buttons
+   - After saving → redirect to `/`
 
-3. **Sticky панель** — на главной внизу кнопка "Новый план"
+3. **Sticky panel** — "New plan" button at bottom on home page
 
-### Преимущества двухэтапной генерации
+### Two-Stage Generation Benefits
 
-- **Экономия API:** не генерируем список покупок при каждой перегенерации плана
-- **Быстрее итерации:** меньше токенов в ответе = быстрее ответ
-- **Лучший UX:** пользователь видит чёткое разделение процесса
-
----
-
-## UI: Главная страница (/)
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│ 🍽️ iamhungry                                                      │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────────┐ │
-│  │  ◀  Неделя 2 (6-12 янв)  ▶                                  │ │
-│  └─────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-│  ┌──────────────────┬───────────────────┐                        │
-│  │ [  План  ]       │ [ Список покупок ]│  ← табы                │
-│  └──────────────────┴───────────────────┘                        │
-│                                                                  │
-│  ╔══════════════════════════════════════════════════════════════╗│
-│  ║  Таб "План":                                                 ║│
-│  ║  ┌────────────────────────────────────────────────────────┐  ║│
-│  ║  │      │ Завтрак              │ Обед    │ Ужин           │  ║│
-│  ║  │ Пн   │ Тост с авокадо (10м) │    —    │ Курица (35м)   │  ║│
-│  ║  │ Вт   │ —                    │    —    │ Тако (40м)     │  ║│
-│  ║  │ Ср   │ Омлет (15м)          │    —    │ Паста (25м)    │  ║│
-│  ║  │ ...  │ ...                  │   ...   │ ...            │  ║│
-│  ║  └────────────────────────────────────────────────────────┘  ║│
-│  ╚══════════════════════════════════════════════════════════════╝│
-│                                                                  │
-│  ╔══════════════════════════════════════════════════════════════╗│
-│  ║  Таб "Список покупок":                                       ║│
-│  ║  ┌────────────────────────────────────────────────────────┐  ║│
-│  ║  │ 📦 Поход 1 (Пн-Чт)                                     │  ║│
-│  ║  │                                                        │  ║│
-│  ║  │ 🥛 Молочные продукты                                   │  ║│
-│  ║  │ [ ] Яйца — 6 шт                                        │  ║│
-│  ║  │ [ ] Сливки 20% — 200 мл                                │  ║│
-│  ║  │                                                        │  ║│
-│  ║  │ 🥬 Овощи / Фрукты                                      │  ║│
-│  ║  │ [ ] Авокадо — 2 шт                                     │  ║│
-│  ║  │ [ ] Помидоры — 4 шт                                    │  ║│
-│  ║  │ ...                                                    │  ║│
-│  ║  └────────────────────────────────────────────────────────┘  ║│
-│  ╚══════════════════════════════════════════════════════════════╝│
-│                                                                  │
-├──────────────────────────────────────────────────────────────────┤
-│  ░░░░░░░░░░░░░░░░ STICKY PANEL ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │
-│  │                  [ + Новый план ]                           │ │
-│  └──────────────────────────────────────────────────────────────┘│
-└──────────────────────────────────────────────────────────────────┘
-```
-
-### Empty State (нет планов)
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│ 🍽️ iamhungry                                                      │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│                                                                  │
-│                         🍳                                        │
-│                                                                  │
-│              Пока нет сохранённых планов                         │
-│                                                                  │
-│           Создайте первый план питания на неделю                 │
-│                                                                  │
-│                  [ + Создать план ]                              │
-│                                                                  │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+- **API savings:** don't generate shopping list on every plan regeneration
+- **Faster iterations:** fewer tokens in response = faster response
+- **Better UX:** user sees clear process separation
 
 ---
 
-## UI: Страница создания плана (/new)
+## Loading States and Skeleton UI
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│ ← Назад               🍽️ Новый план                              │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│ ┌─── Виталик ─────────────────────┐                              │
-│ │      │ Завтрак │ Обед │ Ужин  │                              │
-│ │ Пн   │   🍽️    │  ❌  │  🍽️   │                              │
-│ │ Вт   │   ☕    │  ❌  │  🍽️   │                              │
-│ │ Ср   │   🍽️    │  ❌  │  🍽️   │                              │
-│ │ Чт   │   ☕    │  ❌  │  🍽️   │                              │
-│ │ Пт   │   🍽️    │  ❌  │  🍽️   │                              │
-│ │ Сб   │   🍽️    │  🍽️  │  🍽️   │                              │
-│ │ Вс   │   🍽️    │  🍽️  │  🍽️   │                              │
-│ └─────────────────────────────────┘                              │
-│                                                                  │
-│ ┌─── Лена ───────────────────────┐                              │
-│ │      │ Завтрак │ Обед │ Ужин  │                              │
-│ │ Пн   │   🍽️    │  ❌  │  🍽️   │                              │
-│ │ Вт   │   ☕    │  ❌  │  🍽️   │                              │
-│ │ Ср   │   🍽️    │  ❌  │  🍽️   │                              │
-│ │ Чт   │   ☕    │  ❌  │  🍽️   │                              │
-│ │ Пт   │   ☕    │  ❌  │  🍽️   │                              │
-│ │ Сб   │   🍽️    │  🍽️  │  🍽️   │                              │
-│ │ Вс   │   🍽️    │  🍽️  │  🍽️   │                              │
-│ └─────────────────────────────────┘                              │
-│                                                                  │
-│ Клик = смена: 🍽️ Полноценно → ☕ Кофе → ❌ Пропуск               │
-│                                                                  │
-├──────────────────────────────────────────────────────────────────┤
-│ 🍳 Предпочитаемые кухни                                          │
-│ ┌──────────────────────────────────────────────────────────────┐ │
-│ │ [✓] Восточно-европейская   [✓] Азиатская    [✓] Мексиканская │ │
-│ │ [✓] Американская           [ ] Итальянская  [ ] Средиземном. │ │
-│ │ [ ] Японская               [ ] Тайская      [ ] Грузинская   │ │
-│ │ [ ] Скандинавская                                            │ │
-│ └──────────────────────────────────────────────────────────────┘ │
-│                                                                  │
-├──────────────────────────────────────────────────────────────────┤
-│ 📝 Особые условия                                                │
-│ ┌──────────────────────────────────────────────────────────────┐ │
-│ │ Не использовать блюда: карбонара, борщ (были недавно)        │ │
-│ │ В холодильнике есть курица — использовать.                   │ │
-│ │ Хочется чего-то острого в середине недели.                   │ │
-│ │                                                              │ │
-│ └──────────────────────────────────────────────────────────────┘ │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ═══════════════ ЭТАП 1: ПЛАН ПИТАНИЯ ═══════════════            │
-│                                                                  │
-│  [ 🤖 Сгенерировать план ]                                       │
-│  скопировать промпт                                              │
-│                                                                  │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │  [Превью плана питания — БЕЗ списка покупок]             │    │
-│  │  или [Loading spinner]                                   │    │
-│  │  или [Ошибка: ...]                                       │    │
-│  │                                                          │    │
-│  │  [ 🔄 Перегенерировать ]  [ ✅ Подтвердить план ]        │    │
-│  │  (можно перегенерировать сколько угодно раз)             │    │
-│  └──────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  ═══════════════ ЭТАП 2: СПИСОК ПОКУПОК ═══════════════          │
-│  (появляется после подтверждения плана)                          │
-│                                                                  │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │  [Генерация списка покупок...]                           │    │
-│  │  или [Превью списка покупок]                             │    │
-│  │                                                          │    │
-│  │  [ ← Вернуться к плану ]  [ 💾 Сохранить ]               │    │
-│  │                                                          │    │
-│  │  После "Сохранить" → редирект на /                       │    │
-│  └──────────────────────────────────────────────────────────┘    │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+For all async operations, show skeleton placeholders instead of spinners for better UX.
 
----
+### Components
 
-## Loading States и Skeleton UI
-
-Для всех асинхронных операций показываем skeleton-заглушки вместо спиннеров для лучшего UX.
-
-### Компонент Skeleton
-
-```tsx
-// components/Skeleton.tsx
-export function Skeleton({ className }: { className?: string }) {
-  return <div className={`animate-pulse bg-gray-700 rounded ${className}`} />;
-}
-```
-
-### Skeleton для плана питания
-
-```tsx
-// components/MealPlanSkeleton.tsx
-export function MealPlanSkeleton() {
-  return (
-    <div className="space-y-4">
-      {/* Заголовок недели */}
-      <Skeleton className="h-8 w-48 mx-auto" />
-
-      {/* Табы */}
-      <div className="flex gap-2">
-        <Skeleton className="h-10 flex-1" />
-        <Skeleton className="h-10 flex-1" />
-      </div>
-
-      {/* Таблица плана */}
-      <div className="space-y-2">
-        {Array.from({ length: 7 }).map((_, i) => (
-          <div key={i} className="flex gap-2">
-            <Skeleton className="h-12 w-12" />
-            <Skeleton className="h-12 flex-1" />
-            <Skeleton className="h-12 flex-1" />
-            <Skeleton className="h-12 flex-1" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-```
-
-### Skeleton для списка покупок
-
-```tsx
-// components/ShoppingListSkeleton.tsx
-export function ShoppingListSkeleton() {
-  return (
-    <div className="space-y-4">
-      {/* Категория */}
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="space-y-2">
-          <Skeleton className="h-6 w-32" />
-          {Array.from({ length: 4 }).map((_, j) => (
-            <div key={j} className="flex items-center gap-3">
-              <Skeleton className="h-7 w-7 rounded-lg" />
-              <Skeleton className="h-5 flex-1" />
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
-### Использование в хуках
-
-```tsx
-// hooks/usePlans.ts — добавить isLoading
-export function usePlans() {
-  const [isLoading, setIsLoading] = useState(true);
-  // ...
-
-  return {
-    // ...
-    isLoading, // true пока грузится список планов
-  };
-}
-
-// Пример использования на главной
-function HomePage() {
-  const { currentPlan, isLoading, hasPlans } = usePlans();
-
-  if (isLoading) {
-    return <MealPlanSkeleton />;
-  }
-
-  if (!hasPlans) {
-    return <EmptyState />;
-  }
-
-  return <MealPlanView plan={currentPlan} />;
-}
-```
-
-### Loading для генерации
-
-```tsx
-// components/GenerateSection.tsx
-function GenerateSection({ isLoading, result, error }) {
-  return (
-    <div>
-      <button disabled={isLoading}>
-        {isLoading ? (
-          <>
-            <Spinner className="w-4 h-4 mr-2" />
-            Генерируем план...
-          </>
-        ) : (
-          "Сгенерировать план"
-        )}
-      </button>
-
-      {isLoading && (
-        <div className="mt-4 p-4 bg-gray-800 rounded-lg">
-          <p className="text-gray-400 text-sm mb-3">
-            Claude думает над вашим планом...
-          </p>
-          <MealPlanSkeleton />
-        </div>
-      )}
-
-      {error && (
-        <div className="mt-4 p-4 bg-red-900/30 border border-red-500 rounded-lg">
-          <p className="text-red-400">{error}</p>
-        </div>
-      )}
-
-      {result && !isLoading && <MealPlanPreview data={result} />}
-    </div>
-  );
-}
-```
-
-### Переводы
-
-```json
-// messages/ru.json (добавить)
-{
-  "loading": {
-    "plans": "Загружаем планы...",
-    "generating": "Claude думает над вашим планом...",
-    "saving": "Сохраняем...",
-    "syncing": "Синхронизация..."
-  }
-}
-```
+- `Skeleton` — base component with `animate-pulse`
+- `MealPlanSkeleton` — skeleton for plan table
+- `ShoppingListSkeleton` — skeleton for shopping list
 
 ---
 
 ## Error Boundaries
 
-React Error Boundaries для graceful handling ошибок в UI. Next.js App Router предоставляет встроенную поддержку через специальные файлы.
+React Error Boundaries for graceful error handling in UI. Next.js App Router provides built-in support via special files.
 
-### Глобальный error boundary
+### Files
 
-```tsx
-// app/error.tsx
-"use client";
-
-import { useEffect } from "react";
-import { useTranslations } from "next-intl";
-
-export default function GlobalError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  const t = useTranslations("errors");
-
-  useEffect(() => {
-    // Логируем ошибку (можно отправить в Sentry и т.п.)
-    console.error("Global error:", error);
-  }, [error]);
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-      <div className="max-w-md w-full bg-gray-800 rounded-xl p-6 text-center">
-        <div className="text-4xl mb-4">😵</div>
-        <h1 className="text-xl font-semibold text-gray-100 mb-2">
-          {t("somethingWentWrong")}
-        </h1>
-        <p className="text-gray-400 mb-6">{t("tryAgainOrRefresh")}</p>
-        <div className="flex gap-3 justify-center">
-          <button
-            onClick={reset}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors"
-          >
-            {t("tryAgain")}
-          </button>
-          <button
-            onClick={() => (window.location.href = "/")}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-200 transition-colors"
-          >
-            {t("goHome")}
-          </button>
-        </div>
-        {process.env.NODE_ENV === "development" && (
-          <pre className="mt-4 p-3 bg-red-900/30 rounded text-left text-xs text-red-300 overflow-auto">
-            {error.message}
-          </pre>
-        )}
-      </div>
-    </div>
-  );
-}
-```
-
-### Error boundary для страницы /new
-
-```tsx
-// app/new/error.tsx
-"use client";
-
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-
-export default function NewPlanError({
-  error,
-  reset,
-}: {
-  error: Error;
-  reset: () => void;
-}) {
-  const t = useTranslations("errors");
-
-  return (
-    <div className="p-4">
-      <div className="max-w-lg mx-auto bg-red-900/20 border border-red-500/50 rounded-xl p-6">
-        <h2 className="text-lg font-semibold text-red-400 mb-2">
-          {t("planCreationError")}
-        </h2>
-        <p className="text-gray-300 mb-4">
-          {t("planCreationErrorDescription")}
-        </p>
-        <div className="flex gap-3">
-          <button
-            onClick={reset}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white"
-          >
-            {t("tryAgain")}
-          </button>
-          <Link
-            href="/"
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-200"
-          >
-            {t("back")}
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-```
-
-### Not Found страница
-
-```tsx
-// app/not-found.tsx
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-
-export default function NotFound() {
-  const t = useTranslations("errors");
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-      <div className="text-center">
-        <div className="text-6xl mb-4">🍽️</div>
-        <h1 className="text-2xl font-bold text-gray-100 mb-2">404</h1>
-        <p className="text-gray-400 mb-6">{t("pageNotFound")}</p>
-        <Link
-          href="/"
-          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white inline-block"
-        >
-          {t("goHome")}
-        </Link>
-      </div>
-    </div>
-  );
-}
-```
-
-### Переводы для ошибок
-
-```json
-// messages/ru.json (расширить секцию errors)
-{
-  "errors": {
-    "generation": "Ошибка генерации плана",
-    "invalidResponse": "Невалидный ответ от Claude",
-    "unknown": "Неизвестная ошибка",
-    "somethingWentWrong": "Что-то пошло не так",
-    "tryAgainOrRefresh": "Попробуйте ещё раз или обновите страницу",
-    "tryAgain": "Попробовать снова",
-    "goHome": "На главную",
-    "back": "Назад",
-    "planCreationError": "Ошибка создания плана",
-    "planCreationErrorDescription": "Не удалось загрузить форму создания плана. Попробуйте обновить страницу.",
-    "pageNotFound": "Страница не найдена"
-  }
-}
-```
-
-### Обработка ошибок в компонентах
-
-Для более гранулярной обработки ошибок (например, только в списке покупок) можно использовать React Error Boundary напрямую:
-
-```tsx
-// components/ErrorBoundary.tsx
-"use client";
-
-import { Component, ReactNode } from "react";
-
-interface Props {
-  children: ReactNode;
-  fallback: ReactNode;
-}
-
-interface State {
-  hasError: boolean;
-}
-
-export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(): State {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("Component error:", error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-// Использование
-<ErrorBoundary fallback={<ShoppingListError />}>
-  <ShoppingListView items={items} />
-</ErrorBoundary>;
-```
+- `app/error.tsx` — Global error boundary
+- `app/new/error.tsx` — Error boundary for /new page
+- `app/not-found.tsx` — 404 page
+- `components/ErrorBoundary.tsx` — Reusable component for granular handling
 
 ---
 
-## Модель данных (Zod)
+## Data Model (Zod)
 
-```typescript
-import { z } from "zod";
+### Schemas in `schemas/appState.ts`
 
-// Статусы ячеек календаря
-export const MealSlotStatusSchema = z.enum([
-  "full", // 🍽️ Полноценный приём пищи (готовим дома)
-  "coffee", // ☕ Лёгкий перекус (кофе/круассан)
-  "skip", // ❌ Пропуск
-]);
-export type MealSlotStatus = z.infer<typeof MealSlotStatusSchema>;
+- `MealSlotStatusSchema` — cell statuses: "full" | "coffee" | "skip"
+- `DaySchema` — days of week: "mon" | "tue" | ... | "sun"
+- `MealSchema` — meals: "breakfast" | "lunch" | "dinner"
+- `DayScheduleSchema` — day schedule
+- `PersonWeekScheduleSchema` — person's week schedule
+- `CuisineIdSchema` — cuisine identifiers
+- `AppStateSchema` — full app state
 
-// Дни недели
-export const DaySchema = z.enum([
-  "mon",
-  "tue",
-  "wed",
-  "thu",
-  "fri",
-  "sat",
-  "sun",
-]);
-export type Day = z.infer<typeof DaySchema>;
+### Zod Benefits
 
-// Приёмы пищи
-export const MealSchema = z.enum(["breakfast", "lunch", "dinner"]);
-export type Meal = z.infer<typeof MealSchema>;
-
-// Расписание одного человека на день
-export const DayScheduleSchema = z.object({
-  breakfast: MealSlotStatusSchema,
-  lunch: MealSlotStatusSchema,
-  dinner: MealSlotStatusSchema,
-});
-export type DaySchedule = z.infer<typeof DayScheduleSchema>;
-
-// Расписание одного человека на неделю
-export const PersonWeekScheduleSchema = z.record(DaySchema, DayScheduleSchema);
-export type PersonWeekSchedule = z.infer<typeof PersonWeekScheduleSchema>;
-
-// Идентификаторы кухонь
-export const CuisineIdSchema = z.enum([
-  "eastern-european",
-  "asian",
-  "mexican",
-  "american",
-  "italian",
-  "mediterranean",
-  "japanese",
-  "thai",
-  "georgian",
-  "scandinavian",
-]);
-export type CuisineId = z.infer<typeof CuisineIdSchema>;
-
-// Полное состояние приложения
-export const AppStateSchema = z.object({
-  schedules: z.object({
-    vitalik: PersonWeekScheduleSchema,
-    lena: PersonWeekScheduleSchema,
-  }),
-  selectedCuisines: z.array(CuisineIdSchema),
-  specialConditions: z.string(),
-});
-export type AppState = z.infer<typeof AppStateSchema>;
-
-// Валидация при загрузке из Vercel KV
-export function parseAppState(data: unknown): AppState | null {
-  const result = AppStateSchema.safeParse(data);
-  return result.success ? result.data : null;
-}
-```
-
-### Преимущества Zod
-
-1. **Единый источник правды** — схема = тип
-2. **Валидация данных из KV** — `safeParse` вернёт `null` если данные битые
-3. **Автодополнение** — TypeScript знает все возможные значения enum'ов
-4. **Рефакторинг** — изменил схему → TypeScript покажет все места для исправления
+1. **Single source of truth** — schema = type
+2. **Data validation from KV** — `safeParse` returns `null` if data is corrupted
+3. **Autocomplete** — TypeScript knows all possible enum values
+4. **Refactoring** — change schema → TypeScript shows all places to fix
 
 ---
 
-## Генерация промпта
+## Prompt Generation
 
-На основе контролов система автоматически генерирует структуру промпта:
+Based on controls, the system automatically generates prompt structure:
 
-1. **Считаем порции** — для каждого слота: сколько человек ест дома
-2. **Определяем тип приёма** — обычный/большой/быстрый
-3. **Исключаем слоты** — где никто не ест дома
-4. **Добавляем особые условия** — гости, остатки, пожелания
-
----
-
-## Структура проекта (Next.js App Router)
-
-```
-├── messages/
-│   └── ru.json                   # Переводы (русский)
-│
-├── i18n/
-│   └── request.ts                # Конфигурация next-intl
-│
-├── lib/
-│   └── rateLimit.ts              # Rate limiting через Vercel KV
-│
-├── app/
-│   ├── layout.tsx                # NextIntlClientProvider
-│   ├── page.tsx                  # Главная: просмотр планов + табы
-│   ├── error.tsx                 # Глобальный error boundary
-│   ├── not-found.tsx             # 404 страница
-│   ├── new/
-│   │   ├── page.tsx              # Создание нового плана
-│   │   └── error.tsx             # Error boundary для /new
-│   └── api/
-│       ├── generate-meal-plan/
-│       │   └── route.ts          # Этап 1: генерация плана питания (без списка покупок)
-│       ├── generate-shopping-list/
-│       │   └── route.ts          # Этап 2: генерация списка покупок (после подтверждения плана)
-│       ├── regenerate-meals/
-│       │   └── route.ts          # Частичная перегенерация отдельных блюд
-│       └── plans/
-│           ├── route.ts          # GET: список планов, POST: сохранить план
-│           └── [weekKey]/
-│               ├── route.ts      # GET: конкретный план по ключу
-│               └── checked/
-│                   └── route.ts  # GET/PUT: состояние чекбоксов
-│
-├── components/
-│   ├── WeekCalendar.tsx          # Сетка расписания (для /new)
-│   ├── PersonScheduleRow.tsx     # Строка для одного человека
-│   ├── MealSlotCell.tsx          # Кликабельная ячейка
-│   ├── CuisineSelector.tsx       # Мультиселект кухонь
-│   ├── SpecialConditions.tsx     # Textarea для особых условий
-│   ├── GenerateSection.tsx       # Кнопка генерации + превью
-│   ├── MealPlanView.tsx          # Отображение плана (read-only, для /)
-│   ├── ShoppingListView.tsx      # Список покупок с чекбоксами
-│   ├── WeekPagination.tsx        # Пагинация между неделями
-│   ├── TabSwitcher.tsx           # Переключатель План / Список
-│   ├── EmptyState.tsx            # Пустое состояние (нет планов)
-│   ├── StickyPanel.tsx           # Sticky панель с кнопкой "Новый план"
-│   ├── ErrorBoundary.tsx         # Компонент для обработки ошибок
-│   └── Skeleton.tsx              # Skeleton-заглушки для loading states
-│
-├── hooks/
-│   ├── useSchedule.ts            # Состояние календаря (для /new)
-│   ├── usePlans.ts               # Загрузка/навигация по планам
-│   └── useMealPlanGeneration.ts  # Вызов API + состояние
-│
-├── config/
-│   └── defaults.ts               # Хардкод: люди, кухни, ограничения
-│
-├── schemas/
-│   ├── appState.ts               # Zod-схемы состояния (для /new)
-│   ├── mealPlanResponse.ts       # Zod-схема ответа Claude
-│   └── persistedPlan.ts          # Zod-схемы для сохранённых планов
-│
-└── utils/
-    ├── promptBuilder.ts          # Сборка промпта
-    ├── weekNumber.ts             # Утилиты для работы с номером недели
-    └── shoppingItemId.ts         # Генерация стабильных ID для товаров
-```
-
-### Хардкод-конфиг (defaults.ts)
-
-```typescript
-export const PEOPLE = ["Виталик", "Лена"] as const;
-
-// Все доступные кухни для выбора в UI
-export const AVAILABLE_CUISINES = [
-  "eastern-european",
-  "asian",
-  "mexican",
-  "american",
-  "italian",
-  "mediterranean",
-  "japanese",
-  "thai",
-  "georgian",
-  "scandinavian",
-] as const;
-
-export type CuisineId = (typeof AVAILABLE_CUISINES)[number];
-
-// Дефолтный выбор (предвыбранные при первом заходе)
-export const DEFAULT_SELECTED_CUISINES: CuisineId[] = [
-  "eastern-european",
-  "asian",
-  "mexican",
-  "american",
-];
-
-// Явно исключаем — хардкод, не показываем в UI
-export const EXCLUDED_CUISINES = ["Индийская", "Непальская"];
-
-export const COOKING_TIME = {
-  optimal: 30, // минут
-  max: 60,
-};
-
-export const BANNED_INGREDIENTS = [
-  "Морковный крем-суп",
-  "минестроне",
-  "Гречка",
-  "овсянка",
-  "Чернослив",
-  "курага",
-  "сухофрукты",
-  "Овощные запеканки",
-  "Батат",
-  "Чечевичные и фасолевые супы",
-  "Каперсы",
-];
-
-export const MEAT_RULES = {
-  pork: "только бекон",
-  beef: "максимум 1 раз в неделю",
-  fish: "только лосось/форель/тунец, максимум 1 раз в неделю",
-};
-```
+1. **Count portions** — for each slot: how many people eat at home
+2. **Determine meal type** — regular/large/quick
+3. **Exclude slots** — where no one eats at home
+4. **Add special conditions** — guests, leftovers, preferences
 
 ---
 
-## UI-компонент: CuisineSelector
+## Project Structure (Next.js App Router)
 
-```tsx
-// components/CuisineSelector.tsx
-"use client";
-import { useTranslations } from "next-intl";
-import { AVAILABLE_CUISINES, CuisineId } from "@/config/defaults";
+### Directories
 
-interface CuisineSelectorProps {
-  selected: CuisineId[];
-  onChange: (cuisines: CuisineId[]) => void;
-}
+- `messages/` — Translations (ru.json)
+- `i18n/` — next-intl configuration
+- `lib/` — Rate limiting via Vercel KV
+- `app/` — Next.js App Router pages and layouts
+- `components/` — React components
+- `hooks/` — Custom hooks
+- `config/` — Hardcoded configuration
+- `schemas/` — Zod schemas
+- `utils/` — Utilities
 
-export function CuisineSelector({ selected, onChange }: CuisineSelectorProps) {
-  const t = useTranslations("cuisines");
+### Key Files
 
-  const toggle = (id: CuisineId) => {
-    if (selected.includes(id)) {
-      onChange(selected.filter((c) => c !== id));
-    } else {
-      onChange([...selected, id]);
-    }
-  };
+**app/**
+- `layout.tsx` — NextIntlClientProvider
+- `page.tsx` — Home: view plans + tabs
+- `error.tsx` — Global error boundary
+- `not-found.tsx` — 404 page
+- `new/page.tsx` — Create new plan
+- `new/error.tsx` — Error boundary for /new
 
-  return (
-    <section>
-      <h2 className="text-lg font-semibold mb-3 text-gray-100">{t("title")}</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-        {AVAILABLE_CUISINES.map((id) => (
-          <label
-            key={id}
-            className={`
-              flex items-center gap-2 p-2 rounded-lg cursor-pointer
-              transition-colors border
-              ${
-                selected.includes(id)
-                  ? "bg-blue-900/50 border-blue-500"
-                  : "bg-gray-800 border-gray-700 hover:border-gray-600"
-              }
-            `}
-          >
-            <input
-              type="checkbox"
-              checked={selected.includes(id)}
-              onChange={() => toggle(id)}
-              className="rounded text-blue-500"
-            />
-            <span className="text-gray-200">{t(id)}</span>
-          </label>
-        ))}
-      </div>
-    </section>
-  );
-}
-```
+**app/api/**
+- `generate-meal-plan/route.ts` — Stage 1: meal plan generation
+- `generate-shopping-list/route.ts` — Stage 2: shopping list generation
+- `regenerate-meals/route.ts` — Partial meal regeneration
+- `plans/route.ts` — GET: plans list, POST: save plan
+- `plans/[weekKey]/route.ts` — GET: specific plan by key
+- `plans/[weekKey]/checked/route.ts` — GET/PUT: checkbox state
 
----
+**components/**
+- `WeekCalendar.tsx` — Schedule grid (for /new)
+- `PersonScheduleRow.tsx` — Row for one person
+- `MealSlotCell.tsx` — Clickable cell
+- `CuisineSelector.tsx` — Cuisine multiselect
+- `SpecialConditions.tsx` — Special conditions textarea
+- `GenerateSection.tsx` — Generate button + preview
+- `MealPlanView.tsx` — Plan display (read-only, for /)
+- `ShoppingListView.tsx` — Shopping list with checkboxes
+- `WeekPagination.tsx` — Pagination between weeks
+- `TabSwitcher.tsx` — Plan / List switcher
+- `EmptyState.tsx` — Empty state (no plans)
+- `StickyPanel.tsx` — Sticky panel with "New plan" button
+- `ErrorBoundary.tsx` — Error handling component
+- `Skeleton.tsx` — Skeleton placeholders for loading states
 
-## Ключевой UI-компонент: MealSlotCell
+**hooks/**
+- `useSchedule.ts` — Calendar state (for /new)
+- `usePlans.ts` — Plan loading/navigation
+- `useMealPlanGeneration.ts` — API call + state
 
-```tsx
-// Клик по ячейке циклически меняет статус
-const statusCycle: MealSlotStatus[] = [
-  "full", // 🍽️ Полноценный приём пищи
-  "coffee", // ☕ Лёгкий перекус
-  "skip", // ❌ Пропуск
-];
+**config/**
+- `defaults.ts` — Hardcoded: people, cuisines, constraints
 
-function MealSlotCell({ status, onChange }) {
-  const nextStatus = () => {
-    const idx = statusCycle.indexOf(status);
-    onChange(statusCycle[(idx + 1) % statusCycle.length]);
-  };
+**schemas/**
+- `appState.ts` — Zod state schemas (for /new)
+- `mealPlanResponse.ts` — Zod schema for Claude response
+- `persistedPlan.ts` — Zod schemas for saved plans
 
-  return (
-    <button onClick={nextStatus} className="...">
-      {statusEmoji[status]}
-    </button>
-  );
-}
-```
+**utils/**
+- `promptBuilder.ts` — Prompt building
+- `weekNumber.ts` — Week number utilities
+- `shoppingItemId.ts` — Stable ID generation for items
+
+### Hardcoded Config (defaults.ts)
+
+- `PEOPLE` — ["Виталик", "Лена"] (Russian names kept as-is)
+- `AVAILABLE_CUISINES` — 10 cuisines for UI selection
+- `DEFAULT_SELECTED_CUISINES` — pre-selected cuisines
+- `EXCLUDED_CUISINES` — ["Индийская", "Непальская"] (Indian, Nepalese)
+- `COOKING_TIME` — optimal: 30, max: 60
+- `BANNED_INGREDIENTS` — list of banned ingredients
+- `MEAT_RULES` — meat rules
 
 ---
 
-## Алгоритм генерации промпта
+## UI Component: CuisineSelector
 
-```typescript
-function generatePrompt(
-  state: AppState,
-  previousPlan: MealPlanResponse | null,
-): string {
-  const { people, preferences, weekSchedule, conditions } = state;
-
-  // 1. Считаем порции для каждого слота
-  const mealPlan = calculateMealRequirements(weekSchedule);
-
-  // 2. Формируем секцию "Структура питания"
-  const scheduleSection = formatScheduleSection(mealPlan);
-
-  // 3. Добавляем ограничения
-  const restrictionsSection = formatRestrictions(preferences);
-
-  // 4. Добавляем условия недели
-  const conditionsSection = formatConditions(conditions);
-
-  // 5. Извлекаем блюда из прошлого плана для исключения
-  const previousMealsSection = formatPreviousMeals(previousPlan);
-
-  return `
-# РОЛЬ
-Ты — планировщик питания для семьи из ${people.length} человек в Финляндии.
-
-# СТРУКТУРА ПИТАНИЯ
-${scheduleSection}
-
-# ОГРАНИЧЕНИЯ ПО ПРОДУКТАМ
-${restrictionsSection}
-
-# НЕ ПОВТОРЯТЬ БЛЮДА ИЗ ПРОШЛОГО ПЛАНА
-${previousMealsSection}
-
-# ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ
-${conditionsSection}
-
-# ФОРМАТ ВЫВОДА
-${OUTPUT_FORMAT_JSON}
-  `;
-}
-
-// Извлекает названия блюд из предыдущего плана
-function formatPreviousMeals(plan: MealPlanResponse | null): string {
-  if (!plan) return "Нет данных о прошлом плане.";
-
-  const meals = plan.weekPlan
-    .flatMap((day) => [day.breakfast, day.lunch, day.dinner])
-    .filter((meal): meal is MealItem => meal !== null)
-    .map((meal) => meal.name);
-
-  const uniqueMeals = [...new Set(meals)];
-
-  if (uniqueMeals.length === 0) return "Нет данных о прошлом плане.";
-
-  return `Следующие блюда были в прошлом плане — НЕ используй их:\n${uniqueMeals
-    .map((m) => `- ${m}`)
-    .join("\n")}`;
-}
-```
+Cuisine multiselect. Uses `AVAILABLE_CUISINES` from config and translations from `messages/ru.json`.
 
 ---
 
-## Формат вывода: JSON (Двухэтапная генерация)
+## UI Component: MealSlotCell
 
-Claude возвращает структурированный JSON, который мы парсим и рендерим сами. Это даёт полный контроль над UI и позволяет валидировать ответ через Zod.
-
-**ВАЖНО:** Генерация разделена на два этапа:
-1. **Этап 1:** Генерация плана питания (без списка покупок)
-2. **Этап 2:** Генерация списка покупок (на основе подтверждённого плана)
-
-Это позволяет пользователю перегенерировать план несколько раз без лишних API-вызовов для списка покупок.
-
-### Zod-схемы ответов
-
-```typescript
-// schemas/mealPlanResponse.ts
-import { z } from "zod";
-
-// Блюдо
-export const MealItemSchema = z.object({
-  name: z.string(),
-  time: z.number(), // минуты
-  portions: z.number(),
-});
-export type MealItem = z.infer<typeof MealItemSchema>;
-
-// День в плане питания
-export const DayPlanSchema = z.object({
-  day: z.enum(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]),
-  breakfast: MealItemSchema.nullable(),
-  lunch: MealItemSchema.nullable(),
-  dinner: MealItemSchema.nullable(),
-});
-export type DayPlan = z.infer<typeof DayPlanSchema>;
-
-// Категории продуктов
-export const CategorySchema = z.enum([
-  "dairy", // 🥛 Молочные продукты
-  "meat", // 🥩 Мясо / Рыба
-  "produce", // 🥬 Овощи / Фрукты
-  "pantry", // 🍝 Бакалея
-  "frozen", // ❄️ Заморозка
-  "bakery", // 🥖 Хлеб / Выпечка
-  "condiments", // 🧂 Соусы / Приправы
-]);
-export type Category = z.infer<typeof CategorySchema>;
-
-// Элемент списка покупок
-export const ShoppingItemSchema = z.object({
-  name: z.string(),
-  amount: z.string(),
-  category: CategorySchema,
-  forMeal: z.string().optional(), // для какого блюда
-});
-export type ShoppingItem = z.infer<typeof ShoppingItemSchema>;
-
-// Элемент с ID (для клиента, после обработки)
-export const ShoppingItemWithIdSchema = ShoppingItemSchema.extend({
-  id: z.string(), // детерминированный ID для сохранения состояния чекбоксов
-});
-export type ShoppingItemWithId = z.infer<typeof ShoppingItemWithIdSchema>;
-
-// Поход в магазин
-export const ShoppingTripSchema = z.object({
-  label: z.string(), // "Поход 1 (Пн-Чт)"
-  items: z.array(ShoppingItemSchema),
-});
-export type ShoppingTrip = z.infer<typeof ShoppingTripSchema>;
-
-// ============================================
-// Этап 1: Только план питания (без списка покупок)
-// ============================================
-export const MealPlanOnlyResponseSchema = z.object({
-  weekPlan: z.array(DayPlanSchema),
-});
-export type MealPlanOnlyResponse = z.infer<typeof MealPlanOnlyResponseSchema>;
-
-export function parseMealPlanOnlyResponse(data: unknown): MealPlanOnlyResponse | null {
-  const result = MealPlanOnlyResponseSchema.safeParse(data);
-  return result.success ? result.data : null;
-}
-
-// ============================================
-// Этап 2: Только список покупок (после подтверждения плана)
-// ============================================
-export const ShoppingListResponseSchema = z.object({
-  shoppingTrips: z.array(ShoppingTripSchema),
-});
-export type ShoppingListResponse = z.infer<typeof ShoppingListResponseSchema>;
-
-export function parseShoppingListResponse(data: unknown): ShoppingListResponse | null {
-  const result = ShoppingListResponseSchema.safeParse(data);
-  return result.success ? result.data : null;
-}
-
-// ============================================
-// Полный ответ (для сохранённых планов)
-// ============================================
-export const MealPlanResponseSchema = z.object({
-  weekPlan: z.array(DayPlanSchema),
-  shoppingTrips: z.array(ShoppingTripSchema),
-});
-export type MealPlanResponse = z.infer<typeof MealPlanResponseSchema>;
-
-export function parseMealPlanResponse(data: unknown): MealPlanResponse | null {
-  const result = MealPlanResponseSchema.safeParse(data);
-  return result.success ? result.data : null;
-}
-```
-
-### Инструкция для промпта — Этап 1: План питания
-
-```
-# ФОРМАТ ВЫВОДА
-
-Верни ответ ТОЛЬКО в виде JSON (без markdown-блока, без пояснений).
-НЕ включай список покупок — только план питания.
-
-Структура:
-
-{
-  "weekPlan": [
-    {
-      "day": "mon",
-      "breakfast": { "name": "Тост с авокадо и яйцом", "time": 10, "portions": 2 },
-      "lunch": null,
-      "dinner": { "name": "Куриная грудка с овощами", "time": 35, "portions": 2 }
-    },
-    {
-      "day": "tue",
-      "breakfast": null,
-      "lunch": null,
-      "dinner": { "name": "Тако с говядиной", "time": 40, "portions": 2 }
-    }
-    // ... остальные дни
-  ]
-}
-
-ПРАВИЛА:
-- day: "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun"
-- null для пропущенных приёмов пищи
-- time: время приготовления в минутах (число)
-- portions: количество порций (число)
-```
-
-### Инструкция для промпта — Этап 2: Список покупок
-
-```
-# ФОРМАТ ВЫВОДА
-
-Верни ответ ТОЛЬКО в виде JSON (без markdown-блока, без пояснений).
-Сгенерируй список покупок на основе предоставленного плана питания.
-
-Структура:
-
-{
-  "shoppingTrips": [
-    {
-      "label": "Поход 1 (Пн-Чт)",
-      "items": [
-        { "name": "Яйца", "amount": "6 шт", "category": "dairy" },
-        { "name": "Авокадо", "amount": "2 шт", "category": "produce" },
-        { "name": "Куриное филе", "amount": "400 г", "category": "meat" },
-        { "name": "Сливки 20%", "amount": "200 мл", "category": "dairy", "forMeal": "карбонара" }
-      ]
-    },
-    {
-      "label": "Поход 2 (Пт-Вс)",
-      "items": [
-        // ...
-      ]
-    }
-  ]
-}
-
-ПРАВИЛА:
-- category: "dairy" | "meat" | "produce" | "pantry" | "frozen" | "bakery" | "condiments"
-- forMeal: опционально, если ингредиент нужен для конкретного блюда
-- Группируй покупки по 2 похода: Пн-Чт и Пт-Вс
-- Объединяй одинаковые ингредиенты (суммируй количество)
-```
-
-### Категории продуктов
-
-| Категория         | Эмодзи | ID         |
-| ----------------- | ------ | ---------- |
-| Молочные продукты | 🥛     | dairy      |
-| Мясо / Рыба       | 🥩     | meat       |
-| Овощи / Фрукты    | 🥬     | produce    |
-| Бакалея           | 🍝     | pantry     |
-| Заморозка         | ❄️     | frozen     |
-| Хлеб / Выпечка    | 🥖     | bakery     |
-| Соусы / Приправы  | 🧂     | condiments |
-
-### Рендеринг в React
-
-```tsx
-// components/MealPlanResult.tsx
-import { MealPlanResponse, Category } from "../schemas/mealPlanResponse";
-
-const CATEGORY_EMOJI: Record<Category, string> = {
-  dairy: "🥛",
-  meat: "🥩",
-  produce: "🥬",
-  pantry: "🍝",
-  frozen: "❄️",
-  bakery: "🥖",
-  condiments: "🧂",
-};
-
-const CATEGORY_LABELS: Record<Category, string> = {
-  dairy: "Молочные продукты",
-  meat: "Мясо / Рыба",
-  produce: "Овощи / Фрукты",
-  pantry: "Бакалея",
-  frozen: "Заморозка",
-  bakery: "Хлеб / Выпечка",
-  condiments: "Соусы / Приправы",
-};
-
-const DAY_LABELS: Record<string, string> = {
-  mon: "Пн",
-  tue: "Вт",
-  wed: "Ср",
-  thu: "Чт",
-  fri: "Пт",
-  sat: "Сб",
-  sun: "Вс",
-};
-
-function MealPlanResult({ data }: { data: MealPlanResponse }) {
-  return (
-    <div className="space-y-8">
-      {/* План питания */}
-      <section>
-        <h2 className="text-xl font-semibold mb-4">План питания</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="border p-3 text-left">День</th>
-                <th className="border p-3 text-left">Завтрак</th>
-                <th className="border p-3 text-left">Обед</th>
-                <th className="border p-3 text-left">Ужин</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.weekPlan.map((day) => (
-                <tr key={day.day}>
-                  <td className="border p-3 font-medium">
-                    {DAY_LABELS[day.day]}
-                  </td>
-                  <MealCell meal={day.breakfast} />
-                  <MealCell meal={day.lunch} />
-                  <MealCell meal={day.dinner} />
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Списки покупок */}
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Список покупок</h2>
-        {data.shoppingTrips.map((trip, idx) => (
-          <ShoppingTripCard key={idx} trip={trip} />
-        ))}
-      </section>
-    </div>
-  );
-}
-
-function MealCell({ meal }: { meal: MealItem | null }) {
-  if (!meal) {
-    return <td className="border p-3 text-gray-400">—</td>;
-  }
-  return (
-    <td className="border p-3">
-      <div className="font-medium">{meal.name}</div>
-      <div className="text-sm text-gray-500">{meal.time} мин</div>
-    </td>
-  );
-}
-
-function ShoppingTripCard({ trip }: { trip: ShoppingTrip }) {
-  // Группируем по категориям
-  const byCategory = trip.items.reduce(
-    (acc, item) => {
-      if (!acc[item.category]) acc[item.category] = [];
-      acc[item.category].push(item);
-      return acc;
-    },
-    {} as Record<Category, ShoppingItem[]>,
-  );
-
-  return (
-    <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-      <h3 className="font-semibold mb-3">{trip.label}</h3>
-      {Object.entries(byCategory).map(([category, items]) => (
-        <div key={category} className="mb-3">
-          <h4 className="text-sm font-medium text-gray-600 mb-1">
-            {CATEGORY_EMOJI[category as Category]}{" "}
-            {CATEGORY_LABELS[category as Category]}
-          </h4>
-          <ul className="space-y-1">
-            {items.map((item, idx) => (
-              <ShoppingItemRow key={idx} item={item} />
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ShoppingItemRow({ item }: { item: ShoppingItem }) {
-  const [checked, setChecked] = useState(false);
-  return (
-    <li className="flex items-center gap-2">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => setChecked(e.target.checked)}
-        className="rounded"
-      />
-      <span className={checked ? "line-through text-gray-400" : ""}>
-        {item.name} — {item.amount}
-        {item.forMeal && (
-          <span className="text-gray-400 text-sm"> ({item.forMeal})</span>
-        )}
-      </span>
-    </li>
-  );
-}
-```
+Click on cell cycles through status: 🍽️ Full meal → ☕ Coffee → ❌ Skip → 🍽️ ...
 
 ---
 
-## Интеграция с AI SDK (Claude напрямую) — Двухэтапная генерация
+## Output Format: JSON (Two-Stage Generation)
 
-Вместо ручного копирования промпта — генерация плана прямо в приложении через AI SDK от Vercel с прямым подключением к Anthropic API.
+Claude returns structured JSON that we parse and render ourselves. This gives full UI control and allows response validation via Zod.
 
-**ВАЖНО:** Генерация разделена на два этапа:
-1. `/api/generate-meal-plan` — генерирует только план питания (без списка покупок)
-2. `/api/generate-shopping-list` — генерирует список покупок для подтверждённого плана
+**IMPORTANT:** Generation is split into two stages:
+1. **Stage 1:** Meal plan generation (without shopping list)
+2. **Stage 2:** Shopping list generation (based on confirmed plan)
 
-### Установка
+### Response Zod Schemas
 
-```bash
-npm i ai @ai-sdk/anthropic use-debounce next-intl
-```
+**schemas/mealPlanResponse.ts:**
+- `MealItemSchema` — dish (name, time, portions)
+- `DayPlanSchema` — day in plan
+- `CategorySchema` — product categories
+- `ShoppingItemSchema` — shopping list item
+- `ShoppingItemWithIdSchema` — item with ID for client
+- `ShoppingTripSchema` — shopping trip
+- `MealPlanOnlyResponseSchema` — Stage 1: weekPlan only
+- `ShoppingListResponseSchema` — Stage 2: shoppingTrips only
+- `MealPlanResponseSchema` — full response for saved plans
 
-### Переменные окружения
+### Product Categories
 
-```bash
-# .env.local
-ANTHROPIC_API_KEY=sk-ant-...
-```
+| Category          | Emoji | ID         |
+| ----------------- | ----- | ---------- |
+| Dairy             | 🥛    | dairy      |
+| Meat / Fish       | 🥩    | meat       |
+| Vegetables/Fruits | 🥬    | produce    |
+| Pantry            | 🍝    | pantry     |
+| Frozen            | ❄️    | frozen     |
+| Bread / Bakery    | 🥖    | bakery     |
+| Sauces/Condiments | 🧂    | condiments |
 
-### API Route — Этап 1: Генерация плана питания
+---
 
-```typescript
-// app/api/generate-meal-plan/route.ts
-import { anthropic } from "@ai-sdk/anthropic";
-import { generateObject } from "ai";
-import { kv } from "@vercel/kv";
-import { MealPlanOnlyResponseSchema } from "@/schemas/mealPlanResponse";
-import { PersistedPlanSchema } from "@/schemas/persistedPlan";
-import { generateMealPlanPrompt } from "@/utils/promptBuilder";
-import { AppStateSchema } from "@/schemas/appState";
+## AI SDK Integration (Direct Claude) — Two-Stage Generation
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
+Instead of manual prompt copying — plan generation directly in app via Vercel's AI SDK with direct Anthropic API connection.
 
-    // Валидация входных данных
-    const stateResult = AppStateSchema.safeParse(body.state);
-    if (!stateResult.success) {
-      return Response.json(
-        {
-          error: "Невалидные данные запроса",
-          details: stateResult.error.flatten(),
-        },
-        { status: 400 },
-      );
-    }
-    const state = stateResult.data;
+**IMPORTANT:** Generation split into two stages:
+1. `/api/generate-meal-plan` — generates meal plan only (without shopping list)
+2. `/api/generate-shopping-list` — generates shopping list for confirmed plan
 
-    // Получаем последний сохранённый план из KV для исключения повторов
-    const planKeys = await kv.zrange<string[]>(
-      "meal-planner:plan-index",
-      -1,
-      -1,
-    );
-    let previousPlan = null;
-    if (planKeys && planKeys.length > 0) {
-      const lastPlanRaw = await kv.get(`meal-planner:plan:${planKeys[0]}`);
-      const parsed = PersistedPlanSchema.safeParse(lastPlanRaw);
-      previousPlan = parsed.success ? parsed.data : null;
-    }
+### Installation
 
-    // Генерируем промпт для ПЛАНА ПИТАНИЯ (без списка покупок)
-    const prompt = generateMealPlanPrompt(state, previousPlan);
+- ai
+- @ai-sdk/anthropic
+- use-debounce
+- next-intl
 
-    const result = await generateObject({
-      model: anthropic("claude-sonnet-4-20250514"),
-      schema: MealPlanOnlyResponseSchema, // Только weekPlan, без shoppingTrips
-      prompt,
-    });
+### Environment Variables
 
-    return Response.json(result.object);
-  } catch (error) {
-    console.error("Meal plan generation failed:", error);
+- `ANTHROPIC_API_KEY` — Claude API key
 
-    // Обработка специфичных ошибок Claude/AI SDK
-    if (error instanceof Error) {
-      if (error.message?.includes("rate_limit")) {
-        return Response.json(
-          { error: "Слишком много запросов. Подождите минуту." },
-          { status: 429 },
-        );
-      }
-      if (error.message?.includes("content_filter")) {
-        return Response.json(
-          { error: "Запрос отклонён фильтром контента." },
-          { status: 400 },
-        );
-      }
-      if (error.message?.includes("invalid_api_key")) {
-        return Response.json(
-          { error: "Ошибка конфигурации API." },
-          { status: 500 },
-        );
-      }
-    }
+### Client Hook — Two-Stage Generation
 
-    return Response.json(
-      { error: "Ошибка генерации плана. Попробуйте ещё раз." },
-      { status: 500 },
-    );
-  }
-}
-```
+`useMealPlanGeneration` — hook with state:
+- `stage`: "idle" | "generating-plan" | "plan-ready" | "generating-shopping" | "complete"
+- Methods: `generatePlan`, `generateShoppingList`, `resetToPlanStage`, `reset`, `getCompleteResult`
 
-### API Route — Этап 2: Генерация списка покупок
+### Two-Stage Generation Benefits
 
-```typescript
-// app/api/generate-shopping-list/route.ts
-import { anthropic } from "@ai-sdk/anthropic";
-import { generateObject } from "ai";
-import { ShoppingListResponseSchema, MealPlanOnlyResponseSchema } from "@/schemas/mealPlanResponse";
-import { generateShoppingListPrompt } from "@/utils/promptBuilder";
+1. **API cost savings** — don't generate shopping list on every plan regeneration
+2. **Faster iterations** — fewer tokens in response = faster Claude response
+3. **Better UX** — user sees clear process separation
+4. **Fewer tokens** — single plan request ≈ 1-1.5K tokens instead of 2-3K
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
+### Cost
 
-    // Валидация входных данных — принимаем подтверждённый план
-    const planResult = MealPlanOnlyResponseSchema.safeParse(body.weekPlan);
-    if (!planResult.success) {
-      return Response.json(
-        {
-          error: "Невалидный план питания",
-          details: planResult.error.flatten(),
-        },
-        { status: 400 },
-      );
-    }
-    const weekPlan = planResult.data;
-
-    // Генерируем промпт для СПИСКА ПОКУПОК на основе плана
-    const prompt = generateShoppingListPrompt(weekPlan);
-
-    const result = await generateObject({
-      model: anthropic("claude-sonnet-4-20250514"),
-      schema: ShoppingListResponseSchema, // Только shoppingTrips
-      prompt,
-    });
-
-    return Response.json(result.object);
-  } catch (error) {
-    console.error("Shopping list generation failed:", error);
-
-    if (error instanceof Error) {
-      if (error.message?.includes("rate_limit")) {
-        return Response.json(
-          { error: "Слишком много запросов. Подождите минуту." },
-          { status: 429 },
-        );
-      }
-    }
-
-    return Response.json(
-      { error: "Ошибка генерации списка покупок. Попробуйте ещё раз." },
-      { status: 500 },
-    );
-  }
-}
-```
-
-### Клиентский хук — Двухэтапная генерация
-
-```typescript
-// hooks/useMealPlanGeneration.ts
-import { useState } from "react";
-import {
-  MealPlanOnlyResponse,
-  ShoppingListResponse,
-  MealPlanResponse,
-  parseMealPlanOnlyResponse,
-  parseShoppingListResponse,
-} from "@/schemas/mealPlanResponse";
-import { AppState } from "@/schemas/appState";
-
-type GenerationStage = "idle" | "generating-plan" | "plan-ready" | "generating-shopping" | "complete";
-
-export function useMealPlanGeneration() {
-  const [stage, setStage] = useState<GenerationStage>("idle");
-  const [error, setError] = useState<string | null>(null);
-  const [mealPlan, setMealPlan] = useState<MealPlanOnlyResponse | null>(null);
-  const [shoppingList, setShoppingList] = useState<ShoppingListResponse | null>(null);
-
-  // Этап 1: Генерация плана питания
-  const generatePlan = async (state: AppState) => {
-    setStage("generating-plan");
-    setError(null);
-
-    try {
-      const res = await fetch("/api/generate-meal-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ state }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Ошибка генерации плана");
-      }
-
-      const data = await res.json();
-      const parsed = parseMealPlanOnlyResponse(data);
-
-      if (!parsed) {
-        throw new Error("Невалидный ответ от Claude");
-      }
-
-      setMealPlan(parsed);
-      setStage("plan-ready");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Неизвестная ошибка");
-      setStage("idle");
-    }
-  };
-
-  // Этап 2: Генерация списка покупок (после подтверждения плана)
-  const generateShoppingList = async () => {
-    if (!mealPlan) {
-      setError("Сначала нужно сгенерировать план питания");
-      return;
-    }
-
-    setStage("generating-shopping");
-    setError(null);
-
-    try {
-      const res = await fetch("/api/generate-shopping-list", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ weekPlan: mealPlan }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Ошибка генерации списка покупок");
-      }
-
-      const data = await res.json();
-      const parsed = parseShoppingListResponse(data);
-
-      if (!parsed) {
-        throw new Error("Невалидный ответ от Claude");
-      }
-
-      setShoppingList(parsed);
-      setStage("complete");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Неизвестная ошибка");
-      setStage("plan-ready"); // Возвращаемся к подтверждённому плану
-    }
-  };
-
-  // Сброс для повторной генерации плана
-  const resetToPlanStage = () => {
-    setShoppingList(null);
-    setStage("plan-ready");
-    setError(null);
-  };
-
-  // Полный сброс
-  const reset = () => {
-    setMealPlan(null);
-    setShoppingList(null);
-    setStage("idle");
-    setError(null);
-  };
-
-  // Полный результат для сохранения
-  const getCompleteResult = (): MealPlanResponse | null => {
-    if (!mealPlan || !shoppingList) return null;
-    return {
-      weekPlan: mealPlan.weekPlan,
-      shoppingTrips: shoppingList.shoppingTrips,
-    };
-  };
-
-  return {
-    // Состояние
-    stage,
-    error,
-    mealPlan,
-    shoppingList,
-
-    // Флаги для UI
-    isGeneratingPlan: stage === "generating-plan",
-    isGeneratingShopping: stage === "generating-shopping",
-    isPlanReady: stage === "plan-ready" || stage === "generating-shopping" || stage === "complete",
-    isComplete: stage === "complete",
-
-    // Действия
-    generatePlan,
-    generateShoppingList,
-    resetToPlanStage,
-    reset,
-    getCompleteResult,
-  };
-}
-```
-
-### Преимущества двухэтапной генерации
-
-1. **Экономия API-вызовов** — не генерируем список покупок при каждой перегенерации плана
-2. **Быстрее итерации** — меньше токенов в ответе = быстрее ответ от Claude
-3. **Лучший UX** — пользователь видит чёткое разделение процесса
-4. **Меньше токенов** — один запрос плана ≈ 1-1.5K токенов вместо 2-3K
-
-### Стоимость
-
-Claude Sonnet 4: ~$3/$15 за 1M токенов (input/output).
-- Генерация плана питания ≈ 1-1.5K токенов → **~$0.005-0.01**
-- Генерация списка покупок ≈ 1-1.5K токенов → **~$0.005-0.01**
-- **Итого за полный цикл:** ~$0.01-0.02
-- **При 3 перегенерациях плана:** ~$0.02-0.04 (вместо ~$0.03-0.06 при старом подходе)
+Claude Sonnet 4: ~$3/$15 per 1M tokens (input/output).
+- Meal plan generation ≈ 1-1.5K tokens → **~$0.005-0.01**
+- Shopping list generation ≈ 1-1.5K tokens → **~$0.005-0.01**
+- **Total per full cycle:** ~$0.01-0.02
+- **With 3 plan regenerations:** ~$0.02-0.04
 
 ---
 
 ## Rate Limiting
 
-Защита от злоупотребления API (даже авторизованными пользователями). Используем Vercel KV для хранения счётчиков.
+Protection from API abuse (even by authenticated users). Using Vercel KV for counter storage.
 
-### Middleware для rate limiting
+### checkRateLimit Function
 
-```typescript
-// lib/rateLimit.ts
-import { kv } from "@vercel/kv";
+Checks rate limit for user by identifier (IP or user ID).
 
-interface RateLimitResult {
-  success: boolean;
-  remaining: number;
-  resetIn: number; // секунд до сброса
-}
+### Limits for Different Operations
 
-/**
- * Проверяет rate limit для пользователя.
- * @param identifier - уникальный идентификатор (IP или user ID)
- * @param limit - максимум запросов
- * @param windowSeconds - окно времени в секундах
- */
-export async function checkRateLimit(
-  identifier: string,
-  limit: number = 10,
-  windowSeconds: number = 60,
-): Promise<RateLimitResult> {
-  const key = `rate:${identifier}`;
-
-  // Атомарно увеличиваем счётчик
-  const current = await kv.incr(key);
-
-  // Если это первый запрос — устанавливаем TTL
-  if (current === 1) {
-    await kv.expire(key, windowSeconds);
-  }
-
-  // Получаем оставшееся время
-  const ttl = await kv.ttl(key);
-
-  return {
-    success: current <= limit,
-    remaining: Math.max(0, limit - current),
-    resetIn: ttl > 0 ? ttl : windowSeconds,
-  };
-}
-```
-
-### Использование в API routes
-
-```typescript
-// app/api/generate-meal-plan/route.ts
-import { checkRateLimit } from "@/lib/rateLimit";
-import { headers } from "next/headers";
-
-export async function POST(req: Request) {
-  // Получаем IP (или другой идентификатор)
-  const headersList = await headers();
-  const ip = headersList.get("x-forwarded-for")?.split(",")[0] ?? "unknown";
-
-  // Проверяем rate limit: 10 генераций в минуту
-  const rateLimit = await checkRateLimit(`generate:${ip}`, 10, 60);
-
-  if (!rateLimit.success) {
-    return Response.json(
-      {
-        error: "Слишком много запросов. Попробуйте снова через минуту.",
-        retryAfter: rateLimit.resetIn,
-      },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(rateLimit.resetIn),
-          "X-RateLimit-Remaining": String(rateLimit.remaining),
-        },
-      },
-    );
-  }
-
-  // ... остальная логика генерации
-}
-```
-
-### Лимиты для разных операций
-
-| Операция           | Лимит | Окно  | Причина                           |
-| ------------------ | ----- | ----- | --------------------------------- |
-| Генерация плана    | 10    | 1 мин | Дорогой вызов Claude API          |
-| Перегенерация блюд | 20    | 1 мин | Меньше токенов, но всё ещё дорого |
-| Сохранение плана   | 30    | 1 мин | Дёшево, но защита от спама        |
-| Toggle чекбокса    | 100   | 1 мин | Часто используется, высокий лимит |
-
-### Клиентская обработка 429
-
-```typescript
-// hooks/useMealPlanGeneration.ts
-const generate = async (state: AppState) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-        const res = await fetch('/api/generate-meal-plan', { ... });
-
-        if (res.status === 429) {
-            const data = await res.json();
-            const retryAfter = data.retryAfter || 60;
-            setError(`Слишком много запросов. Подождите ${retryAfter} сек.`);
-            return;
-        }
-
-        // ... остальная обработка
-    } catch (e) { ... }
-};
-```
+| Operation             | Limit | Window | Reason                                 |
+| --------------------- | ----- | ------ | -------------------------------------- |
+| Plan generation       | 10    | 1 min  | Expensive Claude API call              |
+| Meal regeneration     | 20    | 1 min  | Fewer tokens, but still expensive      |
+| Plan saving           | 30    | 1 min  | Cheap, but spam protection             |
+| Checkbox toggle       | 100   | 1 min  | Frequently used, high limit            |
 
 ---
 
-## Интеграция с Vercel KV
+## Vercel KV Integration
 
-### Установка
+### Installation
 
-```bash
-npm i @vercel/kv
-```
+- @vercel/kv
 
-### Переменные окружения
+### Environment Variables
 
-```bash
-# .env.local (автоматически добавляются при создании KV в dashboard)
-KV_REST_API_URL=https://...
-KV_REST_API_TOKEN=...
-KV_REST_API_READ_ONLY_TOKEN=...
-```
+- `KV_REST_API_URL`
+- `KV_REST_API_TOKEN`
+- `KV_REST_API_READ_ONLY_TOKEN`
 
-### Zod-схемы для персистентности
+### Persistence Zod Schemas
 
-```typescript
-// schemas/persistedPlan.ts
-import { z } from "zod";
-import { MealPlanResponseSchema } from "./mealPlanResponse";
+**schemas/persistedPlan.ts:**
+- `PersistedPlanSchema` — saved plan with metadata (weekNumber, year, weekStart, weekEnd, savedAt)
+- `PlansListSchema` — plans list for pagination
 
-// Сохранённый план с метаданными
-export const PersistedPlanSchema = MealPlanResponseSchema.extend({
-  weekNumber: z.number(), // Номер недели в году (1-53)
-  year: z.number(), // Год
-  weekStart: z.string(), // Дата начала недели (ISO, для отображения "6-12 янв")
-  weekEnd: z.string(), // Дата конца недели
-  savedAt: z.string().datetime(), // Когда сохранён
-});
-export type PersistedPlan = z.infer<typeof PersistedPlanSchema>;
+### Week Utilities
 
-// Список планов (для пагинации)
-export const PlansListSchema = z.object({
-  plans: z.array(
-    z.object({
-      weekNumber: z.number(),
-      year: z.number(),
-      weekStart: z.string(),
-      weekEnd: z.string(),
-      savedAt: z.string().datetime(),
-    }),
-  ),
-  total: z.number(),
-});
-export type PlansList = z.infer<typeof PlansListSchema>;
-```
+**utils/weekNumber.ts:**
+- `getCurrentWeekInfo()` — current week
+- `formatWeekRange(weekStart, weekEnd)` — range formatting
+- `getPlanKey(year, weekNumber)` — unique key: "2026-02"
 
-### Утилиты для работы с неделями
+### Stable ID Generation for Items
 
-```typescript
-// utils/weekNumber.ts
-import { getISOWeek, startOfISOWeek, endOfISOWeek, format } from "date-fns";
-import { ru } from "date-fns/locale";
+**utils/shoppingItemId.ts:**
+- `generateShoppingItemId(item, tripIndex)` — deterministic ID based on properties
+- `addIdsToShoppingItems(trips)` — adds IDs to all items
 
-export function getCurrentWeekInfo() {
-  const now = new Date();
-  const weekNumber = getISOWeek(now);
-  const year = now.getFullYear();
-  const weekStart = startOfISOWeek(now);
-  const weekEnd = endOfISOWeek(now);
+**Why this matters:**
+- On regeneration "Eggs — 6 pcs" gets the same ID
+- Checkbox state in KV is preserved
+- If user marked item and regenerated plan — mark stays
 
-  return {
-    weekNumber,
-    year,
-    weekStart: weekStart.toISOString(),
-    weekEnd: weekEnd.toISOString(),
-  };
-}
+### KV Data Structure
 
-export function formatWeekRange(weekStart: string, weekEnd: string): string {
-  const start = new Date(weekStart);
-  const end = new Date(weekEnd);
-  // "6-12 янв" или "28 дек - 3 янв"
-  return `${format(start, "d", { locale: ru })}-${format(end, "d MMM", {
-    locale: ru,
-  })}`;
-}
-
-// Уникальный ключ для плана: "2026-02" (год-неделя)
-export function getPlanKey(year: number, weekNumber: number): string {
-  return `${year}-${String(weekNumber).padStart(2, "0")}`;
-}
-```
-
-### Генерация стабильных ID для товаров
-
-Для корректной работы чекбоксов в списке покупок нужны стабильные ID, которые не меняются при перегенерации плана (если товар тот же).
-
-```typescript
-// utils/shoppingItemId.ts
-import { ShoppingItem, ShoppingItemWithId } from "@/schemas/mealPlanResponse";
-
-/**
- * Генерирует детерминированный ID для товара на основе его свойств.
- * Одинаковые товары получат одинаковый ID даже при разных генерациях.
- */
-export function generateShoppingItemId(
-  item: ShoppingItem,
-  tripIndex: number,
-): string {
-  // Нормализуем строки: lowercase + trim
-  const normalized = [
-    item.category,
-    item.name.toLowerCase().trim(),
-    item.amount.toLowerCase().trim(),
-    String(tripIndex),
-  ].join("|");
-
-  // Простой хэш для краткости ID
-  let hash = 0;
-  for (let i = 0; i < normalized.length; i++) {
-    const char = normalized.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-
-  return `item-${Math.abs(hash).toString(36)}`;
-}
-
-/**
- * Добавляет стабильные ID ко всем товарам в списке покупок.
- * Вызывается при получении ответа от Claude перед сохранением.
- */
-export function addIdsToShoppingItems(
-  trips: ShoppingTrip[],
-): ShoppingTripWithIds[] {
-  return trips.map((trip, tripIndex) => ({
-    ...trip,
-    items: trip.items.map((item) => ({
-      ...item,
-      id: generateShoppingItemId(item, tripIndex),
-    })),
-  }));
-}
-```
-
-**Использование:**
-
-```typescript
-// В API route после получения ответа от Claude
-const result = await generateObject({ ... });
-const planWithIds = {
-    ...result.object,
-    shoppingTrips: addIdsToShoppingItems(result.object.shoppingTrips),
-};
-return Response.json(planWithIds);
-```
-
-**Почему это важно:**
-
-- При перегенерации "Яйца — 6 шт" получит тот же ID
-- Состояние чекбоксов в KV (`meal-planner:checked:2026-02`) сохранится
-- Если пользователь отметил товар и перегенерировал план — отметка останется (если товар остался)
-
-### API Routes
-
-**Индексирование планов:**
-
-Вместо `kv.keys('meal-planner:plan:*')` (который сканирует все ключи) используем отдельный индекс — список ключей планов в отсортированном множестве (sorted set).
-
-**Структура в KV:**
-
-```
-meal-planner:plan-index         → sorted set: { "2026-02": 202602, "2026-01": 202601, ... }
-meal-planner:plan:2026-02       → { weekPlan, shoppingTrips, ... }
-meal-planner:checked:2026-02    → ["item-1", "item-2", ...]
-```
-
-```typescript
-// app/api/plans/route.ts — список планов + сохранение нового
-import { kv } from "@vercel/kv";
-import { MealPlanResponseSchema } from "@/schemas/mealPlanResponse";
-import { PersistedPlanSchema } from "@/schemas/persistedPlan";
-import { getCurrentWeekInfo, getPlanKey } from "@/utils/weekNumber";
-
-// GET /api/plans — список всех планов (для пагинации)
-export async function GET() {
-  // Получаем список ключей из индекса (sorted set, от новых к старым)
-  const planKeys = await kv.zrange<string[]>("meal-planner:plan-index", 0, -1, {
-    rev: true,
-  });
-
-  if (!planKeys || planKeys.length === 0) {
-    return Response.json({ plans: [], total: 0 });
-  }
-
-  // Загружаем метаданные всех планов
-  const plans = await Promise.all(
-    planKeys.map(async (key) => {
-      const plan = await kv.get(`meal-planner:plan:${key}`);
-      const parsed = PersistedPlanSchema.safeParse(plan);
-      if (!parsed.success) return null;
-
-      return {
-        weekKey: key,
-        weekNumber: parsed.data.weekNumber,
-        year: parsed.data.year,
-        weekStart: parsed.data.weekStart,
-        weekEnd: parsed.data.weekEnd,
-        savedAt: parsed.data.savedAt,
-      };
-    }),
-  );
-
-  const validPlans = plans.filter(Boolean);
-  return Response.json({ plans: validPlans, total: validPlans.length });
-}
-
-// POST /api/plans — сохранить новый план
-export async function POST(req: Request) {
-  const body = await req.json();
-  const parsed = MealPlanResponseSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return Response.json({ error: "Invalid data" }, { status: 400 });
-  }
-
-  const weekInfo = getCurrentWeekInfo();
-  const planKey = getPlanKey(weekInfo.year, weekInfo.weekNumber);
-  // Score для сортировки: YYYYWW (например, 202602 для недели 2 года 2026)
-  const score = weekInfo.year * 100 + weekInfo.weekNumber;
-
-  const planWithMeta = {
-    ...parsed.data,
-    ...weekInfo,
-    savedAt: new Date().toISOString(),
-  };
-
-  // Атомарно сохраняем план и добавляем в индекс
-  await Promise.all([
-    kv.set(`meal-planner:plan:${planKey}`, planWithMeta),
-    kv.zadd("meal-planner:plan-index", { score, member: planKey }),
-  ]);
-
-  return Response.json({
-    ok: true,
-    weekNumber: weekInfo.weekNumber,
-    year: weekInfo.year,
-  });
-}
-```
-
-```typescript
-// app/api/plans/[weekKey]/route.ts — конкретный план
-import { kv } from "@vercel/kv";
-import { PersistedPlanSchema } from "@/schemas/persistedPlan";
-
-// GET /api/plans/2026-02 — получить план по ключу
-export async function GET(
-  req: Request,
-  { params }: { params: { weekKey: string } },
-) {
-  const plan = await kv.get(`meal-planner:plan:${params.weekKey}`);
-
-  if (!plan) {
-    return Response.json({ error: "Plan not found" }, { status: 404 });
-  }
-
-  const parsed = PersistedPlanSchema.safeParse(plan);
-
-  if (!parsed.success) {
-    return Response.json({ error: "Invalid plan data" }, { status: 500 });
-  }
-
-  return Response.json(parsed.data);
-}
-```
-
-### Клиентский хук
-
-```typescript
-// hooks/usePlans.ts
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { PersistedPlan, PlansList } from "@/schemas/persistedPlan";
-import { MealPlanResponse } from "@/schemas/mealPlanResponse";
-import { getPlanKey } from "@/utils/weekNumber";
-
-export function usePlans() {
-  const router = useRouter();
-  const [plansList, setPlansList] = useState<PlansList | null>(null);
-  const [currentPlan, setCurrentPlan] = useState<PersistedPlan | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Загрузка списка планов при старте
-  useEffect(() => {
-    fetch("/api/plans")
-      .then((res) => res.json())
-      .then((data: PlansList) => {
-        setPlansList(data);
-        // Загружаем первый (самый новый) план
-        if (data.plans.length > 0) {
-          const first = data.plans[0];
-          loadPlan(first.year, first.weekNumber);
-        }
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  // Загрузка конкретного плана
-  const loadPlan = useCallback(async (year: number, weekNumber: number) => {
-    const key = getPlanKey(year, weekNumber);
-    const res = await fetch(`/api/plans/${key}`);
-    if (res.ok) {
-      const plan = await res.json();
-      setCurrentPlan(plan);
-    }
-  }, []);
-
-  // Навигация между планами
-  const goToPrevious = useCallback(() => {
-    if (!plansList || currentIndex >= plansList.plans.length - 1) return;
-    const newIndex = currentIndex + 1;
-    setCurrentIndex(newIndex);
-    const plan = plansList.plans[newIndex];
-    loadPlan(plan.year, plan.weekNumber);
-  }, [plansList, currentIndex, loadPlan]);
-
-  const goToNext = useCallback(() => {
-    if (!plansList || currentIndex <= 0) return;
-    const newIndex = currentIndex - 1;
-    setCurrentIndex(newIndex);
-    const plan = plansList.plans[newIndex];
-    loadPlan(plan.year, plan.weekNumber);
-  }, [plansList, currentIndex, loadPlan]);
-
-  // Сохранение нового плана (вызывается из /new)
-  const savePlan = useCallback(
-    async (plan: MealPlanResponse) => {
-      const res = await fetch("/api/plans", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(plan),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        // Редирект на главную
-        router.push("/");
-      }
-      return data.ok;
-    },
-    [router],
-  );
-
-  return {
-    plansList,
-    currentPlan,
-    currentIndex,
-    isLoading,
-    hasPlans: plansList ? plansList.total > 0 : false,
-    hasPrevious: plansList ? currentIndex < plansList.plans.length - 1 : false,
-    hasNext: currentIndex > 0,
-    goToPrevious,
-    goToNext,
-    savePlan,
-  };
-}
-```
+- `meal-planner:plan-index` — sorted set with plan keys
+- `meal-planner:plan:2026-02` — plan data
+- `meal-planner:checked:2026-02` — marked items
 
 ---
 
-## План реализации MVP
+## MVP Implementation Plan
 
-### 1. ✅ Инициализация проекта
+### 1. ✅ Project Initialization
 
-- Создать Next.js + TypeScript проект
-- Настроить Tailwind CSS
-- Настроить next-intl (конфиг + `messages/ru.json`)
-- Установить date-fns для работы с датами/неделями
-- Создать Vercel KV store в dashboard и подключить к проекту
+- Create Next.js + TypeScript project
+- Configure Tailwind CSS
+- Configure next-intl (config + `messages/ru.json`)
+- Install date-fns for date/week handling
+- Create Vercel KV store in dashboard and connect to project
 
-### 2. ✅ Zod-схемы и конфиг
+### 2. ✅ Zod Schemas and Config
 
-- `schemas/appState.ts` — Zod-схемы для формы создания (календарь, кухни, условия)
-- `schemas/mealPlanResponse.ts` — Zod-схема ответа Claude
-- `schemas/persistedPlan.ts` — Zod-схемы для сохранённых планов (с weekNumber)
-- `config/defaults.ts` — хардкод: люди, кухни, ограничения
-- `utils/weekNumber.ts` — утилиты для работы с номером недели
+- `schemas/appState.ts`
+- `schemas/mealPlanResponse.ts`
+- `schemas/persistedPlan.ts`
+- `config/defaults.ts`
+- `utils/weekNumber.ts`
 
-### 3. Главная страница (/) — просмотр планов
+### 3. Home Page (/) — View Plans
 
-- `MealPlanView` — таблица плана (read-only)
-- `ShoppingListView` — список покупок с чекбоксами
-- `TabSwitcher` — переключение План / Список
-- `WeekPagination` — навигация между неделями (◀ Неделя N ▶)
-- `EmptyState` — если нет планов
-- `StickyPanel` — кнопка "Новый план" внизу
-- `usePlans` хук — загрузка/навигация по планам
+- `MealPlanView`, `ShoppingListView`, `TabSwitcher`, `WeekPagination`
+- `EmptyState`, `StickyPanel`
+- `usePlans` hook
 
-### 4. Страница создания (/new) — форма генерации
+### 4. Create Page (/new) — Generation Form
 
-- `WeekCalendar` — сетка 7 дней × 3 приёма × 2 человека
-- `MealSlotCell` — клик = смена статуса (🍽️ → ☕ → ❌)
-- `CuisineSelector` — мультиселект кухонь
-- `SpecialConditions` — textarea для особых условий
-- Кнопка "← Назад" для возврата на главную
+- `WeekCalendar`, `MealSlotCell`, `CuisineSelector`, `SpecialConditions`
+- "← Back" button
 
-### 5. Двухэтапная генерация (план → список покупок)
+### 5. Two-Stage Generation (plan → shopping list)
 
-**ВАЖНО:** Генерация разделена на два этапа для экономии API и лучшего UX.
+**Stage 1: Meal Plan Generation**
+- `promptBuilder.ts`
+- Exclusion of repeats from last plan
+- API route `/api/generate-meal-plan`
 
-**Этап 1: Генерация плана питания**
-- `promptBuilder.ts` — собирает промпт из календаря + условий + хардкода
-- **Исключение повторов:** перед генерацией получаем последний план из KV
-- API route `/api/generate-meal-plan` — возвращает только `weekPlan` (без `shoppingTrips`)
-- Можно перегенерировать план сколько угодно раз
+**Stage 2: Shopping List Generation**
+- API route `/api/generate-shopping-list`
+- Called after plan confirmation
 
-**Этап 2: Генерация списка покупок**
-- API route `/api/generate-shopping-list` — принимает подтверждённый план, возвращает `shoppingTrips`
-- Вызывается только после подтверждения плана пользователем
+**Hook and Components:**
+- `useMealPlanGeneration`
+- `GenerateSection`
 
-**Хук и компоненты:**
-- `useMealPlanGeneration` хук — состояние двухэтапной генерации (stage: idle → generating-plan → plan-ready → generating-shopping → complete)
-- `GenerateSection` компонент:
-  - **Этап 1:** Кнопка "Сгенерировать план" + превью плана + "Перегенерировать" + "Подтвердить план"
-  - **Этап 2:** Превью списка покупок + "Вернуться к плану" + "Сохранить"
-  - Loading / Error состояния для каждого этапа
-  - **Выборочная перегенерация блюд** — можно пометить конкретные блюда для перегенерации (на этапе 1)
-  - После "Сохранить" → редирект на `/`
+### 6. Persistence (Vercel KV)
 
-### 6. Персистентность (Vercel KV)
-
-**Что сохраняем:**
-
-- **Планы по неделям** — каждый план с номером недели и годом
+**What we save:**
+- Plans by week
 
 **API routes:**
-
-- `GET /api/plans` — список всех планов (метаданные для пагинации)
-- `POST /api/plans` — сохранить новый план (автоматически определяет текущую неделю)
-- `GET /api/plans/[weekKey]` — получить конкретный план по ключу (2026-02)
-
-**Структура данных в KV:**
-
-```
-meal-planner:plan:2026-02  → { weekPlan, shoppingTrips, weekNumber, year, weekStart, weekEnd, savedAt }
-meal-planner:plan:2026-01  → { ... }
-```
-
-**UI flow:**
-
-1. **Главная (`/`):**
-   - Загружаем список планов
-   - Показываем последний план или empty state
-   - Пагинация между неделями
-
-2. **Создание (`/new`):**
-   - Заполняем форму (календарь, кухни, условия)
-   - Генерируем план
-   - Сохраняем → редирект на `/`
+- `GET /api/plans`
+- `POST /api/plans`
+- `GET /api/plans/[weekKey]`
 
 ---
 
-## Тестирование (Vitest)
+## Testing (Vitest)
 
-### Установка
+### What We Test
 
-```bash
-npm i -D vitest
-```
-
-### Что тестируем
-
-| Файл                          | Что покрываем                                         |
-| ----------------------------- | ----------------------------------------------------- |
-| `schemas/mealPlanResponse.ts` | Парсинг валидного/невалидного JSON от Claude          |
-| `schemas/persistedPlan.ts`    | Парсинг данных из KV                                  |
-| `utils/weekNumber.ts`         | `getCurrentWeekInfo`, `formatWeekRange`, `getPlanKey` |
-| `utils/promptBuilder.ts`      | Генерация промпта из разных состояний календаря       |
-| `utils/shoppingItemId.ts`     | Стабильность и детерминированность ID товаров         |
-| `lib/rateLimit.ts`            | Корректность подсчёта и сброса лимитов                |
-
-### Примеры тестов
-
-```typescript
-// schemas/mealPlanResponse.test.ts
-import { describe, test, expect } from "vitest";
-import { parseMealPlanResponse } from "./mealPlanResponse";
-
-describe("parseMealPlanResponse", () => {
-  test("парсит валидный ответ Claude", () => {
-    const valid = {
-      weekPlan: [
-        {
-          day: "mon",
-          breakfast: null,
-          lunch: null,
-          dinner: { name: "Паста", time: 30, portions: 2 },
-        },
-      ],
-      shoppingTrips: [
-        {
-          label: "Поход 1",
-          items: [{ name: "Паста", amount: "500 г", category: "pantry" }],
-        },
-      ],
-    };
-    expect(parseMealPlanResponse(valid)).not.toBeNull();
-  });
-
-  test("возвращает null для невалидного ответа", () => {
-    expect(parseMealPlanResponse({ foo: "bar" })).toBeNull();
-    expect(parseMealPlanResponse(null)).toBeNull();
-    expect(parseMealPlanResponse("string")).toBeNull();
-  });
-
-  test("возвращает null если отсутствует обязательное поле", () => {
-    const missingShoppingTrips = { weekPlan: [] };
-    expect(parseMealPlanResponse(missingShoppingTrips)).toBeNull();
-  });
-});
-```
-
-```typescript
-// utils/weekNumber.test.ts
-import { describe, test, expect } from "vitest";
-import { getPlanKey, formatWeekRange } from "./weekNumber";
-
-describe("getPlanKey", () => {
-  test("форматирует номер недели с ведущим нулём", () => {
-    expect(getPlanKey(2026, 2)).toBe("2026-02");
-    expect(getPlanKey(2026, 12)).toBe("2026-12");
-  });
-});
-
-describe("formatWeekRange", () => {
-  test("форматирует диапазон в одном месяце", () => {
-    const result = formatWeekRange("2026-01-06", "2026-01-12");
-    expect(result).toBe("6-12 янв");
-  });
-
-  test("форматирует диапазон на стыке месяцев", () => {
-    const result = formatWeekRange("2025-12-29", "2026-01-04");
-    expect(result).toMatch(/дек|янв/); // зависит от локали
-  });
-});
-```
-
-```typescript
-// utils/promptBuilder.test.ts
-import { describe, test, expect } from "vitest";
-import { generatePrompt } from "./promptBuilder";
-
-describe("generatePrompt", () => {
-  const baseState = {
-    schedules: {
-      vitalik: {
-        mon: { breakfast: "full", lunch: "skip", dinner: "full" },
-      },
-      lena: {
-        mon: { breakfast: "coffee", lunch: "skip", dinner: "full" },
-      },
-    },
-    selectedCuisines: ["asian", "italian"],
-    specialConditions: "",
-  };
-
-  test("включает выбранные кухни в промпт", () => {
-    const prompt = generatePrompt(baseState, null);
-    expect(prompt).toContain("asian");
-    expect(prompt).toContain("italian");
-  });
-
-  test("добавляет блюда из предыдущего плана в исключения", () => {
-    const previousPlan = {
-      weekPlan: [
-        {
-          day: "mon",
-          breakfast: null,
-          lunch: null,
-          dinner: { name: "Карбонара", time: 30, portions: 2 },
-        },
-      ],
-      shoppingTrips: [],
-    };
-    const prompt = generatePrompt(baseState, previousPlan);
-    expect(prompt).toContain("Карбонара");
-    expect(prompt).toMatch(/не использ|исключ/i);
-  });
-});
-```
-
-```typescript
-// utils/shoppingItemId.test.ts
-import { describe, test, expect } from "vitest";
-import {
-  generateShoppingItemId,
-  addIdsToShoppingItems,
-} from "./shoppingItemId";
-
-describe("generateShoppingItemId", () => {
-  test("генерирует одинаковый ID для одинаковых товаров", () => {
-    const item = { name: "Яйца", amount: "6 шт", category: "dairy" as const };
-    const id1 = generateShoppingItemId(item, 0);
-    const id2 = generateShoppingItemId(item, 0);
-    expect(id1).toBe(id2);
-  });
-
-  test("генерирует разные ID для разных товаров", () => {
-    const item1 = { name: "Яйца", amount: "6 шт", category: "dairy" as const };
-    const item2 = { name: "Молоко", amount: "1 л", category: "dairy" as const };
-    expect(generateShoppingItemId(item1, 0)).not.toBe(
-      generateShoppingItemId(item2, 0),
-    );
-  });
-
-  test("ID стабилен при разном регистре", () => {
-    const item1 = { name: "Яйца", amount: "6 шт", category: "dairy" as const };
-    const item2 = { name: "яйца", amount: "6 ШТ", category: "dairy" as const };
-    expect(generateShoppingItemId(item1, 0)).toBe(
-      generateShoppingItemId(item2, 0),
-    );
-  });
-
-  test("разные tripIndex дают разные ID", () => {
-    const item = { name: "Яйца", amount: "6 шт", category: "dairy" as const };
-    expect(generateShoppingItemId(item, 0)).not.toBe(
-      generateShoppingItemId(item, 1),
-    );
-  });
-});
-
-describe("addIdsToShoppingItems", () => {
-  test("добавляет ID ко всем товарам", () => {
-    const trips = [
-      {
-        label: "Поход 1",
-        items: [
-          { name: "Яйца", amount: "6 шт", category: "dairy" as const },
-          { name: "Молоко", amount: "1 л", category: "dairy" as const },
-        ],
-      },
-    ];
-
-    const result = addIdsToShoppingItems(trips);
-
-    expect(result[0].items[0]).toHaveProperty("id");
-    expect(result[0].items[1]).toHaveProperty("id");
-    expect(result[0].items[0].id).not.toBe(result[0].items[1].id);
-  });
-});
-```
-
-### Конфигурация
-
-```typescript
-// vitest.config.ts
-import { defineConfig } from "vitest/config";
-import path from "path";
-
-export default defineConfig({
-  test: {
-    environment: "node",
-    globals: true,
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./"),
-    },
-  },
-});
-```
-
-### Скрипты в package.json
-
-```json
-{
-  "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest"
-  }
-}
-```
+| File                          | Coverage                                               |
+| ----------------------------- | ------------------------------------------------------ |
+| `schemas/mealPlanResponse.ts` | Parsing valid/invalid JSON from Claude                 |
+| `schemas/persistedPlan.ts`    | Parsing data from KV                                   |
+| `utils/weekNumber.ts`         | `getCurrentWeekInfo`, `formatWeekRange`, `getPlanKey`  |
+| `utils/promptBuilder.ts`      | Prompt generation from different calendar states       |
+| `utils/shoppingItemId.ts`     | Item ID stability and determinism                      |
+| `lib/rateLimit.ts`            | Correct counting and limit resets                      |
 
 ---
 
-## Верификация
+## Verification
 
-**Тесты главной страницы (/):**
+**Home Page (/) Tests:**
 
-1. При наличии планов — показывается последний план
-2. При отсутствии планов — показывается empty state
-3. Табы "План" / "Список покупок" переключаются корректно
-4. Пагинация работает: ◀ ▶ переключают между неделями
-5. Номер недели и даты отображаются правильно
-6. Чекбоксы в списке покупок работают
-7. Кнопка "Новый план" ведёт на `/new`
+1. With existing plans — shows latest plan
+2. Without plans — shows empty state
+3. "Plan" / "Shopping List" tabs switch correctly
+4. Pagination works: ◀ ▶ switch between weeks
+5. Week number and dates display correctly
+6. Shopping list checkboxes work
+7. "New plan" button navigates to `/new`
 
-**Тесты страницы создания (/new):**
+**Create Page (/new) Tests:**
 
-1. Клик по ячейке меняет статус циклически (🍽️ → ☕ → ❌ → 🍽️)
-2. Выбор кухонь работает (чекбоксы включаются/выключаются)
-3. Textarea для особых условий сохраняет текст
-4. Кнопка "← Назад" возвращает на главную
-5. Кнопка "Скопировать промпт" копирует в буфер обмена
+1. Cell click cycles status (🍽️ → ☕ → ❌ → 🍽️)
+2. Cuisine selection works (checkboxes toggle)
+3. Special conditions textarea saves text
+4. "← Back" button returns to home
+5. "Copy prompt" button copies to clipboard
 
-**Тесты двухэтапной AI-интеграции:**
+**Two-Stage AI Integration Tests:**
 
-*Этап 1 — Генерация плана питания:*
-1. Кнопка "Сгенерировать план" отправляет запрос на `/api/generate-meal-plan`
-2. Во время загрузки показывается спиннер и текст "Генерируем план питания..."
-3. При ошибке API показывается сообщение об ошибке
-4. Успешный ответ парсится через `MealPlanOnlyResponseSchema` (без shoppingTrips)
-5. План соответствует заданному расписанию (null для пропущенных слотов)
-6. **Исключение повторов:** блюда из последнего плана добавляются в промпт как исключения
-7. Кнопки "Перегенерировать" и "Подтвердить план" появляются после генерации
+*Stage 1 — Meal Plan Generation:*
+1. "Generate plan" button sends request to `/api/generate-meal-plan`
+2. Loading shows spinner and "Generating meal plan..." text
+3. API error shows error message
+4. Successful response parsed via `MealPlanOnlyResponseSchema`
+5. Plan matches given schedule (null for skipped slots)
+6. Repeat exclusion: dishes from last plan added to prompt as exclusions
+7. "Regenerate" and "Confirm plan" buttons appear after generation
 
-*Этап 2 — Генерация списка покупок:*
-8. Кнопка "Подтвердить план" отправляет запрос на `/api/generate-shopping-list`
-9. В запрос передаётся подтверждённый план питания
-10. Показывается спиннер и текст "Генерируем список покупок..."
-11. Успешный ответ парсится через `ShoppingListResponseSchema`
-12. Кнопки "Вернуться к плану" и "Сохранить" появляются после генерации списка
+*Stage 2 — Shopping List Generation:*
+8. "Confirm plan" button sends request to `/api/generate-shopping-list`
+9. Request includes confirmed meal plan
+10. Shows spinner and "Generating shopping list..." text
+11. Successful response parsed via `ShoppingListResponseSchema`
+12. "Back to plan" and "Save" buttons appear after list generation
 
-**Тесты выборочной перегенерации (Этап 1):**
+**Selective Meal Regeneration Tests (Stage 1):**
 
-1. Клик по блюду в превью помечает его для перегенерации (появляется иконка ⟳)
-2. Повторный клик снимает пометку
-3. Счётчик "Исправить (N)" показывает количество помеченных блюд
-4. Кнопка "Исправить" неактивна если ничего не выбрано
-5. "Исправить" вызывает `/api/regenerate-meals` с правильными параметрами
-6. После частичной перегенерации обновляются только выбранные блюда
-7. Остальные блюда в плане не изменяются
+1. Click on dish in preview marks it for regeneration (⟳ icon appears)
+2. Second click removes mark
+3. "Fix (N)" counter shows number of marked dishes
+4. "Fix" button inactive if nothing selected
+5. "Fix" calls `/api/regenerate-meals` with correct parameters
+6. After partial regeneration only selected dishes update
+7. Other dishes in plan remain unchanged
 
-**Тесты персистентности (Vercel KV):**
+**Persistence Tests (Vercel KV):**
 
-1. После "Сохранить" план сохраняется с номером недели и годом
-2. Сохраняется полный план (weekPlan + shoppingTrips)
-3. Происходит редирект на `/` после сохранения
-4. Новый план появляется в списке на главной
-5. План для той же недели перезаписывается (не дублируется)
-6. Пагинация корректно загружает разные планы
+1. After "Save" plan saves with week number and year
+2. Full plan saved (weekPlan + shoppingTrips)
+3. Redirect to `/` after saving
+4. New plan appears in home list
+5. Plan for same week overwrites (no duplicates)
+6. Pagination correctly loads different plans
 
-**E2E проверка (двухэтапный flow):**
+**E2E Check (Two-Stage Flow):**
 
-1. Открыть `/` → видим empty state
-2. Нажать "Создать план" → переход на `/new`
-3. Настроить расписание, выбрать кухни, добавить условия
-4. Нажать "Сгенерировать план" → дождаться результата (только план, без списка покупок)
-5. (Опционально) Нажать "Перегенерировать" несколько раз пока план не понравится
-6. Нажать "Подтвердить план" → генерируется список покупок
-7. (Опционально) Нажать "Вернуться к плану" → можно перегенерировать план
-8. Нажать "Сохранить" → редирект на `/`
-9. Видим сохранённый план с правильным номером недели
-10. Переключиться на таб "Список покупок" → видим сгруппированный список
-
----
-
-## Выборочная перегенерация блюд (Этап 1)
-
-На **Этапе 1** (после генерации плана питания, но перед подтверждением) пользователь может пометить отдельные блюда, которые не понравились, и перегенерировать только их.
-
-**ВАЖНО:** Выборочная перегенерация доступна только на Этапе 1, до подтверждения плана. После нажатия "Подтвердить план" генерируется список покупок (Этап 2), и для изменения блюд нужно вернуться к Этапу 1 через кнопку "Вернуться к плану".
-
-### UI превью плана с выборочной перегенерацией (Этап 1)
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  ЭТАП 1: План питания                                                │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  │      │ Завтрак              │ Обед    │ Ужин                   │  │
-│  │ Пн   │ Тост с авокадо (10м) │    —    │ [⟳] Курица терияки (35м)│  │
-│  │ Вт   │ —                    │    —    │ Тако с говядиной (40м)  │  │
-│  │ Ср   │ [⟳] Омлет (15м)      │    —    │ Паста карбонара (25м)   │  │
-│  │ Чт   │ —                    │    —    │ [⟳] Рис с овощами (30м) │  │
-│  │ ...  │ ...                  │   ...   │ ...                     │  │
-│                                                                      │
-│  ┌────────────────────────────────────────────────────────────────┐  │
-│  │ Выбрано для перегенерации: 3 блюда                             │  │
-│  │ • Курица терияки (Пн, ужин)                                    │  │
-│  │ • Омлет (Ср, завтрак)                                          │  │
-│  │ • Рис с овощами (Чт, ужин)                                     │  │
-│  └────────────────────────────────────────────────────────────────┘  │
-│                                                                      │
-│  [ 🔄 Перегенерировать ]  [ ✏️ Исправить (3) ]  [ ✅ Подтвердить ]  │
-│                                                                      │
-│  (После "Подтвердить" → генерируется список покупок)                 │
-│                                                                      │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
-### Взаимодействие (Этап 1)
-
-| Действие                | Результат                                                     |
-| ----------------------- | ------------------------------------------------------------- |
-| **Клик по блюду**       | Toggle пометки "перегенерировать" (добавляется иконка ⟳)      |
-| **"Исправить (N)"**     | Перегенерирует только помеченные блюда, остальные сохраняются |
-| **"Перегенерировать"**  | Генерирует весь план заново                                   |
-| **"Подтвердить план"**  | Переход к Этапу 2 → генерация списка покупок                  |
-
-### Состояние компонента
-
-```typescript
-// hooks/useMealPlanGeneration.ts (расширение)
-interface MealPlanGenerationState {
-  result: MealPlanResponse | null;
-  isLoading: boolean;
-  error: string | null;
-  // Новое: блюда для перегенерации
-  mealsToRegenerate: Set<string>; // формат: "mon-dinner", "wed-breakfast"
-}
-
-// Переключение пометки блюда
-const toggleMealForRegeneration = (day: Day, meal: Meal) => {
-  const key = `${day}-${meal}`;
-  setMealsToRegenerate((prev) => {
-    const next = new Set(prev);
-    if (next.has(key)) next.delete(key);
-    else next.add(key);
-    return next;
-  });
-};
-
-// Частичная перегенерация
-const regenerateSelected = async () => {
-  // Вызываем API с указанием каких блюд нужно перегенерировать
-  // и передаём текущий план как базу
-};
-```
-
-### API для частичной перегенерации
-
-```typescript
-// app/api/regenerate-meals/route.ts
-import { anthropic } from "@ai-sdk/anthropic";
-import { generateObject } from "ai";
-import { MealPlanResponseSchema } from "@/schemas/mealPlanResponse";
-
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const {
-      state, // AppState — текущие настройки календаря
-      currentPlan, // MealPlanResponse — текущий сгенерированный план
-      mealsToRegenerate, // string[] — ["mon-dinner", "wed-breakfast"]
-    } = body;
-
-    const prompt = generatePartialRegenerationPrompt(
-      state,
-      currentPlan,
-      mealsToRegenerate,
-    );
-
-    // Claude возвращает полный план с обновлёнными блюдами и пересчитанным списком покупок
-    const result = await generateObject({
-      model: anthropic("claude-sonnet-4-20250514"),
-      schema: MealPlanResponseSchema,
-      prompt,
-    });
-
-    return Response.json(result.object);
-  } catch (error) {
-    console.error("Regeneration failed:", error);
-
-    if (error instanceof Error) {
-      if (error.message?.includes("rate_limit")) {
-        return Response.json(
-          { error: "Слишком много запросов. Подождите минуту." },
-          { status: 429 },
-        );
-      }
-      if (error.message?.includes("content_filter")) {
-        return Response.json(
-          { error: "Запрос отклонён фильтром контента." },
-          { status: 400 },
-        );
-      }
-    }
-
-    return Response.json(
-      { error: "Ошибка перегенерации плана" },
-      { status: 500 },
-    );
-  }
-}
-```
-
-### Промпт для частичной перегенерации
-
-**Важно:** Промпт включает полный контекст текущего плана, чтобы:
-
-- Избежать дублирования ингредиентов с существующими блюдами
-- Сохранить стилистическую согласованность недели
-- Корректно пересчитать список покупок
-
-```typescript
-// utils/promptBuilder.ts (добавить функцию)
-function generatePartialRegenerationPrompt(
-  state: AppState,
-  currentPlan: MealPlanResponse,
-  mealsToRegenerate: string[],
-): string {
-  // Извлекаем названия блюд, которые нужно заменить
-  const mealsToExclude = mealsToRegenerate
-    .map((key) => {
-      const [day, meal] = key.split("-") as [Day, Meal];
-      const dayPlan = currentPlan.weekPlan.find((d) => d.day === day);
-      return dayPlan?.[meal]?.name;
-    })
-    .filter(Boolean);
-
-  // Форматируем существующий план (блюда, которые остаются)
-  const existingMeals = currentPlan.weekPlan
-    .flatMap((day) => {
-      const meals: string[] = [];
-      const dayKey = day.day;
-      if (day.breakfast && !mealsToRegenerate.includes(`${dayKey}-breakfast`)) {
-        meals.push(`${DAY_LABELS[dayKey]} завтрак: ${day.breakfast.name}`);
-      }
-      if (day.lunch && !mealsToRegenerate.includes(`${dayKey}-lunch`)) {
-        meals.push(`${DAY_LABELS[dayKey]} обед: ${day.lunch.name}`);
-      }
-      if (day.dinner && !mealsToRegenerate.includes(`${dayKey}-dinner`)) {
-        meals.push(`${DAY_LABELS[dayKey]} ужин: ${day.dinner.name}`);
-      }
-      return meals;
-    })
-    .join("\n");
-
-  return `
-# РОЛЬ
-Ты — планировщик питания. Нужно предложить ЗАМЕНУ для некоторых блюд в существующем плане.
-
-# СУЩЕСТВУЮЩИЙ ПЛАН (НЕ МЕНЯТЬ)
-${existingMeals}
-
-# БЛЮДА ДЛЯ ЗАМЕНЫ
-${mealsToRegenerate
-  .map((key) => {
-    const [day, meal] = key.split("-");
-    return `- ${DAY_LABELS[day]}, ${MEAL_LABELS[meal]}`;
-  })
-  .join("\n")}
-
-# НЕ ПРЕДЛАГАТЬ
-Эти блюда уже были в этих слотах — предложи другие:
-${mealsToExclude.map((m) => `- ${m}`).join("\n")}
-
-# ВАЖНЫЕ ПРАВИЛА
-- Не дублируй ингредиенты с существующими блюдами (см. "СУЩЕСТВУЮЩИЙ ПЛАН")
-- Сохраняй общий стиль недели (если много азиатских блюд — предлагай азиатские)
-- Пересчитай список покупок с учётом ВСЕХ блюд (старых + новых)
-
-# ОГРАНИЧЕНИЯ
-${formatRestrictions(state)}
-
-# ФОРМАТ ВЫВОДА
-Верни полный план с обновлёнными блюдами и пересчитанным списком покупок:
-{
-  "weekPlan": [...],  // полный план на неделю
-  "shoppingTrips": [...] // полный пересчитанный список покупок
-}
-`;
-}
-```
-
-### Переводы
-
-```json
-// messages/ru.json (добавить)
-{
-  "generation": {
-    "generatePlan": "Сгенерировать план",
-    "regeneratePlan": "Перегенерировать план",
-    "confirmPlan": "Подтвердить план",
-    "generatingPlan": "Генерируем план питания...",
-    "generatingShopping": "Генерируем список покупок...",
-    "backToPlan": "Вернуться к плану",
-    "planReady": "План готов! Подтвердите для генерации списка покупок.",
-    "shoppingReady": "Список покупок готов!",
-    "save": "Сохранить",
-    "selectedForRegeneration": "Выбрано для перегенерации: {count} блюд",
-    "fixSelected": "Исправить ({count})",
-    "clickToMark": "Клик по блюду = пометить для перегенерации"
-  }
-}
-```
-
-### Визуальный стиль помеченных блюд
-
-```tsx
-// components/MealPreviewCell.tsx
-function MealPreviewCell({ meal, isMarkedForRegeneration, onToggle }: Props) {
-  return (
-    <td
-      onClick={onToggle}
-      className={`
-                border p-3 cursor-pointer transition-all
-                ${
-                  isMarkedForRegeneration
-                    ? "bg-amber-900/30 border-amber-500 ring-2 ring-amber-500/50"
-                    : "hover:bg-gray-700/50"
-                }
-            `}
-    >
-      <div className="flex items-center gap-2">
-        {isMarkedForRegeneration && <span className="text-amber-400">⟳</span>}
-        <div>
-          <div
-            className={`font-medium ${isMarkedForRegeneration ? "text-amber-200" : ""}`}
-          >
-            {meal.name}
-          </div>
-          <div className="text-sm text-gray-500">{meal.time} мин</div>
-        </div>
-      </div>
-    </td>
-  );
-}
-```
+1. Open `/` → see empty state
+2. Click "Create plan" → navigate to `/new`
+3. Configure schedule, select cuisines, add conditions
+4. Click "Generate plan" → wait for result (plan only, no shopping list)
+5. (Optional) Click "Regenerate" several times until plan is satisfactory
+6. Click "Confirm plan" → shopping list generates
+7. (Optional) Click "Back to plan" → can regenerate plan
+8. Click "Save" → redirect to `/`
+9. See saved plan with correct week number
+10. Switch to "Shopping List" tab → see grouped list
 
 ---
 
-## Будущие улучшения (после MVP)
+## Selective Meal Regeneration (Stage 1)
 
-- Второй язык (English) + переключатель в UI
-- Удаление старых планов
+At **Stage 1** (after meal plan generation, but before confirmation) user can mark individual dishes they don't like and regenerate only those.
+
+**IMPORTANT:** Selective regeneration available only at Stage 1, before plan confirmation.
+
+### Interaction (Stage 1)
+
+| Action                  | Result                                                           |
+| ----------------------- | ---------------------------------------------------------------- |
+| **Click on dish**       | Toggle "regenerate" mark (⟳ icon added)                          |
+| **"Fix (N)"**           | Regenerates only marked dishes, others preserved                 |
+| **"Regenerate"**        | Generates entire plan from scratch                               |
+| **"Confirm plan"**      | Proceed to Stage 2 → shopping list generation                    |
+
+### Partial Regeneration Prompt
+
+Prompt includes full current plan context to:
+- Avoid ingredient duplication with existing dishes
+- Maintain stylistic consistency for the week
+- Correctly recalculate shopping list
+
+### Marked Dish Visual Style
+
+- Background: `bg-amber-900/30`
+- Border: `border-amber-500 ring-2 ring-amber-500/50`
+- Icon: ⟳ (amber-400)
+
+---
+
+## Future Improvements (Post-MVP)
+
+- Second language (English) + switcher in UI
+- Deleting old plans
