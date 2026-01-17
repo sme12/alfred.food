@@ -4,6 +4,7 @@ import {
   BANNED_INGREDIENTS,
   COOKING_TIME,
   DAYS_ORDER,
+  DISH_RULES,
   EXCLUDED_CUISINES,
   MEAT_RULES,
   PEOPLE,
@@ -140,6 +141,7 @@ ${scheduleLines.join("\n")}
 - Свинина: ${MEAT_RULES.pork}
 - Говядина: ${MEAT_RULES.beef}
 - Рыба: ${MEAT_RULES.fish}
+- Супы: ${DISH_RULES.soup}
 - Запрещённые: ${BANNED_INGREDIENTS.join(", ")}`);
 
   // COOKING TIME
@@ -315,6 +317,7 @@ ${slotsDescription}`);
 - Свинина: ${MEAT_RULES.pork}
 - Говядина: ${MEAT_RULES.beef}
 - Рыба: ${MEAT_RULES.fish}
+- Супы: ${DISH_RULES.soup}
 - Запрещённые: ${BANNED_INGREDIENTS.join(", ")}`);
 
   // COOKING TIME
