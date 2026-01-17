@@ -551,7 +551,7 @@ Checks rate limit for user by identifier (IP or user ID).
 - `WeekCalendar`, `MealSlotCell`, `CuisineSelector`, `SpecialConditions`
 - "← Back" button
 
-### 5. Two-Stage Generation (plan → shopping list)
+### 5. ✅ Two-Stage Generation (plan → shopping list)
 
 **Stage 1: Meal Plan Generation**
 - `promptBuilder.ts`

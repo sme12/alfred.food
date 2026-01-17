@@ -50,6 +50,20 @@ Set `BYPASS_AUTH=true` in `.env.local` to skip Clerk auth. Never enable in produ
 
 - `getAuthUserId()` in `lib/auth.ts` - Use this to get current user ID. Returns `DEV_USER_ID` ("dev-user") when bypass enabled, otherwise calls Clerk's `auth()`.
 
+### AI Generation
+
+Uses `@ai-sdk/anthropic` with direct Anthropic API (not Vercel AI Gateway).
+
+**Environment variables:**
+- `ANTHROPIC_API_KEY` - Your Anthropic API key (required)
+- `ANTHROPIC_MODEL` - Model ID (default: `claude-sonnet-4-5-20250929`, use opus for production)
+
+**API routes:**
+- `POST /api/generate-meal-plan` - Stage 1: generates meal plan from AppState
+- `POST /api/generate-shopping-list` - Stage 2: generates shopping list from confirmed plan
+
+**Rate limits:** 10 requests/minute per user for both endpoints.
+
 ### Key Patterns
 
 - **Path alias**: Use `@/` for root imports (e.g., `@/schemas/appState`)

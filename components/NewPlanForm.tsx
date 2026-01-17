@@ -4,6 +4,7 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { WeekCalendar } from "./WeekCalendar";
 import { CuisineSelector } from "./CuisineSelector";
 import { SpecialConditions } from "./SpecialConditions";
+import { GenerateSection } from "./GenerateSection";
 
 export function NewPlanForm() {
   const {
@@ -13,6 +14,8 @@ export function NewPlanForm() {
     toggleSlot,
     toggleCuisine,
     setSpecialConditions,
+    getAppState,
+    isValid,
   } = useSchedule();
 
   return (
@@ -23,7 +26,7 @@ export function NewPlanForm() {
         value={specialConditions}
         onChange={setSpecialConditions}
       />
-      {/* Generate button will be added in step 5 (Two-Stage Generation) */}
+      <GenerateSection appState={getAppState()} isFormValid={isValid} />
     </div>
   );
 }
