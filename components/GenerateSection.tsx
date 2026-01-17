@@ -157,7 +157,7 @@ export function GenerateSection({ appState, isFormValid, getWeekKey }: GenerateS
   if (stage === "idle") {
     return (
       <button
-        onClick={() => generatePlan(appState)}
+        onClick={() => generatePlan(appState, getWeekKey())}
         disabled={!isFormValid}
         className="w-full h-14 rounded-lg bg-accent hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed font-medium text-white transition-colors"
       >
@@ -201,7 +201,7 @@ export function GenerateSection({ appState, isFormValid, getWeekKey }: GenerateS
 
         <div className="flex gap-3">
           <button
-            onClick={() => regeneratePlan(appState)}
+            onClick={() => regeneratePlan(appState, getWeekKey())}
             className="flex-1 h-12 rounded-lg bg-card hover:bg-card-hover font-medium transition-colors"
           >
             {hasSelection

@@ -4,16 +4,19 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
 import { getAuthUserId } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rateLimit";
+import { redis, KV_PREFIX } from "@/lib/redis";
 import { AppStateSchema } from "@/schemas/appState";
 import {
   DayPlanSchema,
   MealPlanOnlyResponseSchema,
   MealSlotSchema,
 } from "@/schemas/mealPlanResponse";
+import { parsePersistedPlan } from "@/schemas/persistedPlan";
 import {
   buildMealPlanPrompt,
   buildPartialRegenerationPrompt,
 } from "@/utils/promptBuilder";
+import { getPreviousWeekKey } from "@/utils/weekNumber";
 
 // Cuisine names for prompt building
 const CUISINE_NAMES: Record<string, string> = {
@@ -36,6 +39,7 @@ const RATE_WINDOW_SEC = 60;
 // Request body schema
 const RequestBodySchema = z.object({
   appState: AppStateSchema,
+  weekKey: z.string().optional(),
   currentPlan: z.array(DayPlanSchema).optional(),
   regenerateSlots: z.array(MealSlotSchema).optional(),
 });
@@ -79,7 +83,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const { appState, currentPlan, regenerateSlots } = parseResult.data;
+    const { appState, weekKey, currentPlan, regenerateSlots } = parseResult.data;
+
+    // Fetch previous week's meals if weekKey provided
+    let previousMeals: string[] | undefined;
+    if (weekKey) {
+      const prevWeekKey = getPreviousWeekKey(weekKey);
+      const planKey = `${KV_PREFIX}:plan:${userId}:${prevWeekKey}`;
+      const data = await redis.get(planKey);
+      if (data) {
+        const prevPlan = parsePersistedPlan(data);
+        if (prevPlan?.result.weekPlan) {
+          previousMeals = prevPlan.result.weekPlan.flatMap((day) =>
+            [day.breakfast, day.lunch, day.dinner]
+              .filter((m) => m !== null)
+              .map((m) => m.name)
+          );
+        }
+      }
+    }
 
     // Build prompt - use partial regeneration if slots specified
     const isPartialRegeneration =
@@ -90,9 +112,10 @@ export async function POST(request: Request) {
           appState,
           currentPlan,
           regenerateSlots,
-          CUISINE_NAMES
+          CUISINE_NAMES,
+          previousMeals
         )
-      : buildMealPlanPrompt(appState, CUISINE_NAMES);
+      : buildMealPlanPrompt(appState, CUISINE_NAMES, previousMeals);
 
     // Get model from env (defaults to sonnet)
     const modelId =

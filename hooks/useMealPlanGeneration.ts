@@ -26,9 +26,9 @@ interface UseMealPlanGenerationReturn {
   selectedSlots: Set<string>;
   error: string | null;
 
-  generatePlan: (appState: AppState) => Promise<void>;
+  generatePlan: (appState: AppState, weekKey: string) => Promise<void>;
   confirmPlan: (appState: AppState) => Promise<void>;
-  regeneratePlan: (appState: AppState) => Promise<void>;
+  regeneratePlan: (appState: AppState, weekKey: string) => Promise<void>;
   reset: () => void;
   resetToPlanStage: () => void;
   toggleSlot: (day: Day, meal: Meal) => void;
@@ -46,14 +46,14 @@ const initialState: GenerationState = {
 export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
   const [state, setState] = useState<GenerationState>(initialState);
 
-  const generatePlan = useCallback(async (appState: AppState) => {
+  const generatePlan = useCallback(async (appState: AppState, weekKey: string) => {
     setState((s) => ({ ...s, stage: "generating-plan", error: null }));
 
     try {
       const res = await fetch("/api/generate-meal-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ appState }),
+        body: JSON.stringify({ appState, weekKey }),
       });
 
       if (!res.ok) {
@@ -104,7 +104,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
   );
 
   const regeneratePlan = useCallback(
-    async (appState: AppState) => {
+    async (appState: AppState, weekKey: string) => {
       const currentPlan = state.weekPlan;
       const selectedSlots = state.selectedSlots;
 
@@ -129,6 +129,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             appState,
+            weekKey,
             currentPlan: regenerateSlots.length > 0 ? currentPlan : undefined,
             regenerateSlots: regenerateSlots.length > 0 ? regenerateSlots : undefined,
           }),

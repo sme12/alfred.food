@@ -93,7 +93,8 @@ function getMealSlotInfo(state: AppState, day: Day, meal: Meal): MealSlotInfo {
  */
 export function buildMealPlanPrompt(
   state: AppState,
-  cuisineNames: Record<string, string>
+  cuisineNames: Record<string, string>,
+  previousMeals?: string[]
 ): string {
   const sections: string[] = [];
 
@@ -153,6 +154,12 @@ ${scheduleLines.join("\n")}
   if (state.specialConditions.trim()) {
     sections.push(`ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ
 ${state.specialConditions.trim()}`);
+  }
+
+  // PREVIOUS WEEK MEALS
+  if (previousMeals && previousMeals.length > 0) {
+    sections.push(`БЛЮДА ПРОШЛОЙ НЕДЕЛИ (не повторять)
+${previousMeals.map((m) => `- ${m}`).join("\n")}`);
   }
 
   // OUTPUT FORMAT
@@ -262,7 +269,8 @@ export function buildPartialRegenerationPrompt(
   state: AppState,
   currentPlan: DayPlan[],
   slotsToRegenerate: MealSlot[],
-  cuisineNames: Record<string, string>
+  cuisineNames: Record<string, string>,
+  previousMeals?: string[]
 ): string {
   const sections: string[] = [];
 
@@ -329,6 +337,12 @@ ${slotsDescription}`);
   if (state.specialConditions.trim()) {
     sections.push(`ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ
 ${state.specialConditions.trim()}`);
+  }
+
+  // PREVIOUS WEEK MEALS
+  if (previousMeals && previousMeals.length > 0) {
+    sections.push(`БЛЮДА ПРОШЛОЙ НЕДЕЛИ (не повторять)
+${previousMeals.map((m) => `- ${m}`).join("\n")}`);
   }
 
   // OUTPUT FORMAT
