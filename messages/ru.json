@@ -134,5 +134,11 @@
     "saveSuccess": "План сохранён",
     "selectedCount": "Выбрано: {count}",
     "regenerateSelected": "Перегенерировать выбранное"
+  },
+  "deleteDialog": {
+    "title": "Удалить план?",
+    "message": "План питания и список покупок будут удалены безвозвратно.",
+    "confirm": "Удалить",
+    "cancel": "Отмена"
   }
 }

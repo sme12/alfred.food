@@ -33,6 +33,7 @@ interface PlansState {
   checkedIds: Set<string>;
   weekInfo: WeekInfo | null;
   loading: boolean;
+  deleting: boolean;
   error: string | null;
 }
 
@@ -43,11 +44,13 @@ interface UsePlansReturn {
   checkedIds: Set<string>;
   weekInfo: WeekInfo | null;
   loading: boolean;
+  deleting: boolean;
   error: string | null;
   goToWeek: (weekKey: string) => void;
   goNext: () => void;
   goPrev: () => void;
   toggleChecked: (itemId: string) => void;
+  deletePlan: () => Promise<boolean>;
   hasPrev: boolean;
   hasNext: boolean;
 }
@@ -62,6 +65,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
       ? getWeekInfoByKey(initialWeeks[0].weekKey)
       : null,
     loading: initialWeeks.length > 0,
+    deleting: false,
     error: null,
   });
 
@@ -179,6 +183,54 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
     [state.currentWeekKey, state.checkedIds]
   );
 
+  const deletePlan = useCallback(async (): Promise<boolean> => {
+    if (!state.currentWeekKey) return false;
+
+    setState((s) => ({ ...s, deleting: true, error: null }));
+
+    try {
+      const res = await fetch(`/api/plans/${state.currentWeekKey}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete plan");
+      }
+
+      // Remove from available weeks
+      const newWeeks = state.availableWeeks.filter(
+        (w) => w.weekKey !== state.currentWeekKey
+      );
+
+      // Navigate to adjacent week or clear if none left
+      const currentIndex = state.availableWeeks.findIndex(
+        (w) => w.weekKey === state.currentWeekKey
+      );
+      const nextWeek = newWeeks[currentIndex] ?? newWeeks[currentIndex - 1] ?? null;
+
+      setState((s) => ({
+        ...s,
+        availableWeeks: newWeeks,
+        currentWeekKey: nextWeek?.weekKey ?? null,
+        rawPlan: null,
+        checkedIds: new Set(),
+        weekInfo: nextWeek ? getWeekInfoByKey(nextWeek.weekKey) : null,
+        loading: nextWeek !== null,
+        deleting: false,
+      }));
+
+      return true;
+    } catch (error) {
+      console.error("Failed to delete plan:", error);
+      setState((s) => ({
+        ...s,
+        error: error instanceof Error ? error.message : "Failed to delete",
+        deleting: false,
+      }));
+      return false;
+    }
+  }, [state.currentWeekKey, state.availableWeeks]);
+
   // Compute navigation availability
   const hasPrev = state.currentWeekKey
     ? state.availableWeeks.some(
@@ -212,11 +264,13 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
     checkedIds: state.checkedIds,
     weekInfo: state.weekInfo,
     loading: state.loading,
+    deleting: state.deleting,
     error: state.error,
     goToWeek,
     goNext,
     goPrev,
     toggleChecked,
+    deletePlan,
     hasPrev,
     hasNext,
   };
