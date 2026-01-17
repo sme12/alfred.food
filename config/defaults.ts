@@ -57,6 +57,11 @@ export const MEAT_RULES = {
   fish: "salmon/trout/tuna only, maximum once per week",
 };
 
+// Dish type rules
+export const DISH_RULES = {
+  soup: "maximum once per week",
+};
+
 // Days of the week in order
 export const DAYS_ORDER: Day[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 

@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { getAuthUserId } from "@/lib/auth";
-import { redis, PLAN_INDEX_KEY } from "@/lib/redis";
-import type { PlanListItem } from "@/schemas/persistedPlan";
-import { getWeekInfoByKey } from "@/utils/weekNumber";
+import { redis, KV_PREFIX, PLAN_INDEX_KEY } from "@/lib/redis";
+import type { PlanListItem, PersistedPlan } from "@/schemas/persistedPlan";
+import { AppStateSchema } from "@/schemas/appState";
+import { MealPlanResponseSchema } from "@/schemas/mealPlanResponse";
+import { getWeekInfoByKey, getCurrentWeekInfo } from "@/utils/weekNumber";
 
 // GET /api/plans — List all saved plan keys for the current user
 export async function GET() {
@@ -39,6 +42,61 @@ export async function GET() {
     console.error("Failed to fetch plans:", error);
     return NextResponse.json(
       { error: "Failed to fetch plans" },
+      { status: 500 }
+    );
+  }
+}
+
+// Request body schema for POST
+const SavePlanBodySchema = z.object({
+  weekKey: z.string().optional(),
+  inputState: AppStateSchema,
+  result: MealPlanResponseSchema,
+});
+
+// POST /api/plans — Save a new plan
+export async function POST(request: Request) {
+  const userId = await getAuthUserId();
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const parseResult = SavePlanBodySchema.safeParse(body);
+
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: "Invalid request body", details: parseResult.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const { inputState, result } = parseResult.data;
+    const weekKey = parseResult.data.weekKey || getCurrentWeekInfo().weekKey;
+
+    // Build plan object
+    const plan: PersistedPlan = {
+      weekKey,
+      createdAt: new Date().toISOString(),
+      inputState,
+      result,
+    };
+
+    // Save plan to Redis
+    const planKey = `${KV_PREFIX}:plan:${userId}:${weekKey}`;
+    await redis.set(planKey, plan);
+
+    // Add to user's plan index (sorted set with timestamp as score)
+    const userIndexKey = `${PLAN_INDEX_KEY}:${userId}`;
+    await redis.zadd(userIndexKey, { score: Date.now(), member: weekKey });
+
+    return NextResponse.json({ weekKey, success: true });
+  } catch (error) {
+    console.error("Failed to save plan:", error);
+    return NextResponse.json(
+      { error: "Failed to save plan" },
       { status: 500 }
     );
   }
