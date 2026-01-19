@@ -4,10 +4,10 @@ import type { PlanListItem } from "@/schemas/persistedPlan";
 import { getWeekInfoByKey } from "@/utils/weekNumber";
 import { HomeClient } from "@/components/HomeClient";
 
-async function getPlans(userId: string): Promise<PlanListItem[]> {
+async function getPlans(): Promise<PlanListItem[]> {
   try {
-    const userIndexKey = `${PLAN_INDEX_KEY}:${userId}`;
-    const planKeys = await redis.zrange<string[]>(userIndexKey, 0, -1, { rev: true });
+    // Use shared plan index (not per-user)
+    const planKeys = await redis.zrange<string[]>(PLAN_INDEX_KEY, 0, -1, { rev: true });
 
     if (!planKeys || planKeys.length === 0) {
       return [];
@@ -37,7 +37,7 @@ export default async function Home() {
     return <HomeClient initialWeeks={[]} />;
   }
 
-  const plans = await getPlans(userId);
+  const plans = await getPlans();
 
   return <HomeClient initialWeeks={plans} />;
 }
