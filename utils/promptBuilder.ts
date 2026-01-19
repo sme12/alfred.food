@@ -88,6 +88,56 @@ function getMealSlotInfo(state: AppState, day: Day, meal: Meal): MealSlotInfo {
   return { day, meal, portions, description };
 }
 
+function buildCuisinesSection(
+  state: AppState,
+  cuisineNames: Record<string, string>
+): string {
+  const selectedCuisineNames = state.selectedCuisines.map(
+    (id) => cuisineNames[id] || id
+  );
+  return `КУХНИ
+Выбранные: ${selectedCuisineNames.join(", ")}
+Исключённые: ${EXCLUDED_CUISINES.join(", ")}`;
+}
+
+function buildRestrictionsSection(): string {
+  return `ОГРАНИЧЕНИЯ ПО ПРОДУКТАМ
+- Свинина: ${MEAT_RULES.pork}
+- Говядина: ${MEAT_RULES.beef}
+- Рыба: ${MEAT_RULES.fish}
+- Супы: ${DISH_RULES.soup}
+- Запрещённые: ${BANNED_INGREDIENTS.join(", ")}`;
+}
+
+function buildCookingTimeSection(): string {
+  return `ВРЕМЯ ПРИГОТОВЛЕНИЯ
+- Оптимально: ${COOKING_TIME.optimal} мин
+- Максимум: ${COOKING_TIME.max} мин`;
+}
+
+function buildSpecialConditionsSection(state: AppState): string | null {
+  if (state.specialConditions.trim()) {
+    return `ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ
+${state.specialConditions.trim()}`;
+  }
+  return null;
+}
+
+function buildPreviousMealsSection(previousMeals?: string[]): string | null {
+  if (previousMeals && previousMeals.length > 0) {
+    return `БЛЮДА ПРОШЛОЙ НЕДЕЛИ (не повторять)
+${previousMeals.map((m) => `- ${m}`).join("\n")}`;
+  }
+  return null;
+}
+
+function buildMealRulesSection(): string {
+  return `ПРАВИЛА СЛОТОВ
+- Если указано "null" — блюдо не нужно, поставь null в ответе
+- Если "легкий" — простое быстрое блюдо (бутерброд, круассан), макс ${COOKING_TIME.lightMax} мин
+- Количество порций указано для каждого приёма`;
+}
+
 /**
  * Build the meal plan generation prompt in Russian.
  */
@@ -122,45 +172,18 @@ export function buildMealPlanPrompt(
 
   sections.push(`СТРУКТУРА ПИТАНИЯ
 Расписание на неделю:
-${scheduleLines.join("\n")}
+${scheduleLines.join("\n")}`);
 
-Правила:
-- Если указано "null" — блюдо не нужно, поставь null в ответе
-- Если "легкий" — простое быстрое блюдо (бутерброд, омлет, каша)
-- Количество порций указано для каждого приёма`);
+  sections.push(buildMealRulesSection());
+  sections.push(buildCuisinesSection(state, cuisineNames));
+  sections.push(buildRestrictionsSection());
+  sections.push(buildCookingTimeSection());
 
-  // CUISINES
-  const selectedCuisineNames = state.selectedCuisines.map(
-    (id) => cuisineNames[id] || id
-  );
-  sections.push(`КУХНИ
-Выбранные: ${selectedCuisineNames.join(", ")}
-Исключённые: ${EXCLUDED_CUISINES.join(", ")}`);
+  const specialConditions = buildSpecialConditionsSection(state);
+  if (specialConditions) sections.push(specialConditions);
 
-  // RESTRICTIONS
-  sections.push(`ОГРАНИЧЕНИЯ ПО ПРОДУКТАМ
-- Свинина: ${MEAT_RULES.pork}
-- Говядина: ${MEAT_RULES.beef}
-- Рыба: ${MEAT_RULES.fish}
-- Супы: ${DISH_RULES.soup}
-- Запрещённые: ${BANNED_INGREDIENTS.join(", ")}`);
-
-  // COOKING TIME
-  sections.push(`ВРЕМЯ ПРИГОТОВЛЕНИЯ
-- Оптимально: ${COOKING_TIME.optimal} мин
-- Максимум: ${COOKING_TIME.max} мин`);
-
-  // SPECIAL CONDITIONS
-  if (state.specialConditions.trim()) {
-    sections.push(`ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ
-${state.specialConditions.trim()}`);
-  }
-
-  // PREVIOUS WEEK MEALS
-  if (previousMeals && previousMeals.length > 0) {
-    sections.push(`БЛЮДА ПРОШЛОЙ НЕДЕЛИ (не повторять)
-${previousMeals.map((m) => `- ${m}`).join("\n")}`);
-  }
+  const previousMealsSection = buildPreviousMealsSection(previousMeals);
+  if (previousMealsSection) sections.push(previousMealsSection);
 
   // OUTPUT FORMAT
   sections.push(`ФОРМАТ ВЫВОДА
@@ -312,38 +335,16 @@ ${currentPlanLines.join("\n")}`);
   sections.push(`СЛОТЫ ДЛЯ ЗАМЕНЫ
 ${slotsDescription}`);
 
-  // CUISINES
-  const selectedCuisineNames = state.selectedCuisines.map(
-    (id) => cuisineNames[id] || id
-  );
-  sections.push(`КУХНИ
-Выбранные: ${selectedCuisineNames.join(", ")}
-Исключённые: ${EXCLUDED_CUISINES.join(", ")}`);
+  sections.push(buildMealRulesSection());
+  sections.push(buildCuisinesSection(state, cuisineNames));
+  sections.push(buildRestrictionsSection());
+  sections.push(buildCookingTimeSection());
 
-  // RESTRICTIONS
-  sections.push(`ОГРАНИЧЕНИЯ ПО ПРОДУКТАМ
-- Свинина: ${MEAT_RULES.pork}
-- Говядина: ${MEAT_RULES.beef}
-- Рыба: ${MEAT_RULES.fish}
-- Супы: ${DISH_RULES.soup}
-- Запрещённые: ${BANNED_INGREDIENTS.join(", ")}`);
+  const specialConditions = buildSpecialConditionsSection(state);
+  if (specialConditions) sections.push(specialConditions);
 
-  // COOKING TIME
-  sections.push(`ВРЕМЯ ПРИГОТОВЛЕНИЯ
-- Оптимально: ${COOKING_TIME.optimal} мин
-- Максимум: ${COOKING_TIME.max} мин`);
-
-  // SPECIAL CONDITIONS
-  if (state.specialConditions.trim()) {
-    sections.push(`ОСОБЫЕ УСЛОВИЯ ЭТОЙ НЕДЕЛИ
-${state.specialConditions.trim()}`);
-  }
-
-  // PREVIOUS WEEK MEALS
-  if (previousMeals && previousMeals.length > 0) {
-    sections.push(`БЛЮДА ПРОШЛОЙ НЕДЕЛИ (не повторять)
-${previousMeals.map((m) => `- ${m}`).join("\n")}`);
-  }
+  const previousMealsSection = buildPreviousMealsSection(previousMeals);
+  if (previousMealsSection) sections.push(previousMealsSection);
 
   // OUTPUT FORMAT
   sections.push(`ФОРМАТ ВЫВОДА

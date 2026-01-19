@@ -33,6 +33,7 @@ export const EXCLUDED_CUISINES = ["Индийская", "Непальская"];
 export const COOKING_TIME = {
   optimal: 30, // minutes
   max: 60,
+  lightMax: 10, // max for light meals
 };
 
 // Banned ingredients/dishes
