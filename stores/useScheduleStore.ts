@@ -2,12 +2,15 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type {
-  CuisineId,
-  Day,
-  Meal,
-  MealSlotStatus,
-  PersonWeekSchedule,
+import { z } from "zod";
+import {
+  CuisineIdSchema,
+  PersonWeekScheduleSchema,
+  type CuisineId,
+  type Day,
+  type Meal,
+  type MealSlotStatus,
+  type PersonWeekSchedule,
 } from "@/schemas/appState";
 import {
   createDefaultWeekSchedule,
@@ -111,8 +114,31 @@ export const useScheduleStore = create<ScheduleStore>()(
         schedules: state.schedules,
         selectedCuisines: state.selectedCuisines,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      onRehydrateStorage: () => (state, error) => {
+        if (!state || error) {
+          state?.reset();
+          state?.setHasHydrated(true);
+          return;
+        }
+
+        const PersistedDataSchema = z.object({
+          schedules: z.object({
+            vitalik: PersonWeekScheduleSchema,
+            lena: PersonWeekScheduleSchema,
+          }),
+          selectedCuisines: z.array(CuisineIdSchema),
+        });
+
+        const result = PersistedDataSchema.safeParse({
+          schedules: state.schedules,
+          selectedCuisines: state.selectedCuisines,
+        });
+
+        if (!result.success) {
+          state.reset();
+        }
+
+        state.setHasHydrated(true);
       },
     }
   )

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { AppState, CuisineId, Day, Meal, PersonWeekSchedule } from "@/schemas/appState";
 import type { PersonId } from "@/config/defaults";
 import type { WeekOption } from "@/components/WeekSelector";
@@ -50,10 +50,46 @@ export function useSchedule(): UseScheduleReturn {
   const setWeekOption = useScheduleStore((state) => state.setWeekOption);
   const setCustomWeekNumber = useScheduleStore((state) => state.setCustomWeekNumber);
 
-  const currentWeekInfo = useMemo(() => getCurrentWeekInfo(), []);
+  const [currentWeekInfo, setCurrentWeekInfo] = useState(getCurrentWeekInfo);
+
+  useEffect(() => {
+    const updateWeekInfo = () => {
+      setCurrentWeekInfo(getCurrentWeekInfo());
+    };
+
+    // Check at midnight each day
+    const now = new Date();
+    const msUntilMidnight =
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() -
+      now.getTime();
+
+    const midnightTimeout = setTimeout(() => {
+      updateWeekInfo();
+      // After first midnight, check every 24 hours
+      const dailyInterval = setInterval(updateWeekInfo, 24 * 60 * 60 * 1000);
+      return () => clearInterval(dailyInterval);
+    }, msUntilMidnight);
+
+    // Update on visibility change and focus
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        updateWeekInfo();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", updateWeekInfo);
+
+    return () => {
+      clearTimeout(midnightTimeout);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", updateWeekInfo);
+    };
+  }, []);
+
   const currentWeekNumber = currentWeekInfo.weekNumber;
-  const nextWeekKey = useMemo(() => getNextWeekKey(currentWeekInfo.weekKey), [currentWeekInfo.weekKey]);
-  const nextWeekNumber = useMemo(() => getWeekInfoByKey(nextWeekKey).weekNumber, [nextWeekKey]);
+  const nextWeekKey = getNextWeekKey(currentWeekInfo.weekKey);
+  const nextWeekNumber = getWeekInfoByKey(nextWeekKey).weekNumber;
 
   const getAppState = useCallback((): AppState => {
     return {
