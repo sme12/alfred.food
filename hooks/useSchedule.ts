@@ -1,20 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import type {
-  AppState,
-  CuisineId,
-  Day,
-  Meal,
-  MealSlotStatus,
-  PersonWeekSchedule,
-} from "@/schemas/appState";
-import {
-  createDefaultWeekSchedule,
-  DEFAULT_SELECTED_CUISINES,
-  PEOPLE,
-  STATUS_CYCLE,
-} from "@/config/defaults";
+import { useCallback, useEffect, useState } from "react";
+import type { AppState, CuisineId, Day, Meal, PersonWeekSchedule } from "@/schemas/appState";
 import type { PersonId } from "@/config/defaults";
 import type { WeekOption } from "@/components/WeekSelector";
 import {
@@ -23,6 +10,7 @@ import {
   getPlanKey,
   getWeekInfoByKey,
 } from "@/utils/weekNumber";
+import { useScheduleStore } from "@/stores/useScheduleStore";
 
 interface UseScheduleReturn {
   schedules: {
@@ -45,63 +33,63 @@ interface UseScheduleReturn {
   getAppState: () => AppState;
   getSelectedWeekKey: () => string;
   isValid: boolean;
+  hasHydrated: boolean;
 }
 
 export function useSchedule(): UseScheduleReturn {
-  const [schedules, setSchedules] = useState<{
-    vitalik: PersonWeekSchedule;
-    lena: PersonWeekSchedule;
-  }>(() => ({
-    vitalik: createDefaultWeekSchedule(),
-    lena: createDefaultWeekSchedule(),
-  }));
+  const schedules = useScheduleStore((state) => state.schedules);
+  const selectedCuisines = useScheduleStore((state) => state.selectedCuisines);
+  const specialConditions = useScheduleStore((state) => state.specialConditions);
+  const weekOption = useScheduleStore((state) => state.weekOption);
+  const customWeekNumber = useScheduleStore((state) => state.customWeekNumber);
+  const hasHydrated = useScheduleStore((state) => state._hasHydrated);
 
-  const [selectedCuisines, setSelectedCuisines] = useState<CuisineId[]>(
-    [...DEFAULT_SELECTED_CUISINES]
-  );
+  const toggleSlot = useScheduleStore((state) => state.toggleSlot);
+  const toggleCuisine = useScheduleStore((state) => state.toggleCuisine);
+  const setSpecialConditions = useScheduleStore((state) => state.setSpecialConditions);
+  const setWeekOption = useScheduleStore((state) => state.setWeekOption);
+  const setCustomWeekNumber = useScheduleStore((state) => state.setCustomWeekNumber);
 
-  const [specialConditions, setSpecialConditions] = useState("");
+  const [currentWeekInfo, setCurrentWeekInfo] = useState(getCurrentWeekInfo);
 
-  const [weekOption, setWeekOption] = useState<WeekOption>("current");
-  const [customWeekNumber, setCustomWeekNumber] = useState<number | null>(null);
+  useEffect(() => {
+    const updateWeekInfo = () => {
+      setCurrentWeekInfo(getCurrentWeekInfo());
+    };
 
-  const currentWeekInfo = getCurrentWeekInfo();
+    // Check at midnight each day
+    const now = new Date();
+    const msUntilMidnight =
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() -
+      now.getTime();
+
+    const midnightTimeout = setTimeout(() => {
+      updateWeekInfo();
+      // After first midnight, check every 24 hours
+      const dailyInterval = setInterval(updateWeekInfo, 24 * 60 * 60 * 1000);
+      return () => clearInterval(dailyInterval);
+    }, msUntilMidnight);
+
+    // Update on visibility change and focus
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        updateWeekInfo();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", updateWeekInfo);
+
+    return () => {
+      clearTimeout(midnightTimeout);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", updateWeekInfo);
+    };
+  }, []);
+
   const currentWeekNumber = currentWeekInfo.weekNumber;
   const nextWeekKey = getNextWeekKey(currentWeekInfo.weekKey);
   const nextWeekNumber = getWeekInfoByKey(nextWeekKey).weekNumber;
-
-  const toggleSlot = useCallback(
-    (person: PersonId, day: Day, meal: Meal) => {
-      setSchedules((prev) => {
-        const currentStatus = prev[person][day][meal];
-        const currentIndex = STATUS_CYCLE.indexOf(currentStatus);
-        const nextStatus = STATUS_CYCLE[
-          (currentIndex + 1) % STATUS_CYCLE.length
-        ] as MealSlotStatus;
-
-        return {
-          ...prev,
-          [person]: {
-            ...prev[person],
-            [day]: {
-              ...prev[person][day],
-              [meal]: nextStatus,
-            },
-          },
-        };
-      });
-    },
-    []
-  );
-
-  const toggleCuisine = useCallback((cuisineId: CuisineId) => {
-    setSelectedCuisines((prev) => {
-      if (prev.includes(cuisineId)) {
-        return prev.filter((c) => c !== cuisineId);
-      }
-      return [...prev, cuisineId];
-    });
-  }, []);
 
   const getAppState = useCallback((): AppState => {
     return {
@@ -139,5 +127,6 @@ export function useSchedule(): UseScheduleReturn {
     getAppState,
     getSelectedWeekKey,
     isValid,
+    hasHydrated,
   };
 }
