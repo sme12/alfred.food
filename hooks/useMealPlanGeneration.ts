@@ -8,13 +8,11 @@ export type GenerationStage =
   | "idle" // Initial, form ready
   | "generating-plan" // Loading meal plan
   | "plan-ready" // Plan received, awaiting user confirm
-  | "generating-shopping" // Loading shopping list
-  | "complete"; // Both ready
+  | "generating-shopping"; // Loading shopping list, then auto-save
 
 interface GenerationState {
   stage: GenerationStage;
   weekPlan: DayPlan[] | null;
-  shoppingTrips: ShoppingTrip[] | null;
   selectedSlots: Set<string>; // format: "mon-breakfast"
   error: string | null;
 }
@@ -22,15 +20,16 @@ interface GenerationState {
 interface UseMealPlanGenerationReturn {
   stage: GenerationStage;
   weekPlan: DayPlan[] | null;
-  shoppingTrips: ShoppingTrip[] | null;
   selectedSlots: Set<string>;
   error: string | null;
 
   generatePlan: (appState: AppState, weekKey: string) => Promise<void>;
-  confirmPlan: (appState: AppState) => Promise<void>;
+  confirmPlan: (
+    appState: AppState,
+    onComplete: (shoppingTrips: ShoppingTrip[]) => Promise<void>
+  ) => Promise<void>;
   regeneratePlan: (appState: AppState, weekKey: string) => Promise<void>;
   reset: () => void;
-  resetToPlanStage: () => void;
   toggleSlot: (day: Day, meal: Meal) => void;
   clearSelection: () => void;
 }
@@ -38,7 +37,6 @@ interface UseMealPlanGenerationReturn {
 const initialState: GenerationState = {
   stage: "idle",
   weekPlan: null,
-  shoppingTrips: null,
   selectedSlots: new Set(),
   error: null,
 };
@@ -65,7 +63,6 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
       setState({
         stage: "plan-ready",
         weekPlan,
-        shoppingTrips: null,
         selectedSlots: new Set(),
         error: null,
       });
@@ -76,7 +73,10 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
   }, []);
 
   const confirmPlan = useCallback(
-    async (appState: AppState) => {
+    async (
+      appState: AppState,
+      onComplete: (shoppingTrips: ShoppingTrip[]) => Promise<void>
+    ) => {
       if (!state.weekPlan) return;
 
       setState((s) => ({ ...s, stage: "generating-shopping", error: null }));
@@ -94,7 +94,12 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
         }
 
         const { shoppingTrips } = await res.json();
-        setState((s) => ({ ...s, stage: "complete", shoppingTrips }));
+
+        // Call completion handler (saves to DB + navigates)
+        await onComplete(shoppingTrips);
+
+        // Reset to idle after successful save
+        setState(initialState);
       } catch (e) {
         const message = e instanceof Error ? e.message : "Unknown error";
         setState((s) => ({ ...s, stage: "plan-ready", error: message }));
@@ -111,7 +116,6 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
       setState((s) => ({
         ...s,
         stage: "generating-plan",
-        shoppingTrips: null,
         error: null,
       }));
 
@@ -144,7 +148,6 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
         setState({
           stage: "plan-ready",
           weekPlan,
-          shoppingTrips: null,
           selectedSlots: new Set(),
           error: null,
         });
@@ -158,15 +161,6 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
 
   const reset = useCallback(() => {
     setState(initialState);
-  }, []);
-
-  const resetToPlanStage = useCallback(() => {
-    setState((s) => ({
-      ...s,
-      stage: "plan-ready",
-      shoppingTrips: null,
-      error: null,
-    }));
   }, []);
 
   const toggleSlot = useCallback((day: Day, meal: Meal) => {
@@ -189,14 +183,12 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
   return {
     stage: state.stage,
     weekPlan: state.weekPlan,
-    shoppingTrips: state.shoppingTrips,
     selectedSlots: state.selectedSlots,
     error: state.error,
     generatePlan,
     confirmPlan,
     regeneratePlan,
     reset,
-    resetToPlanStage,
     toggleSlot,
     clearSelection,
   };

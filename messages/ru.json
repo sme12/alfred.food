@@ -126,10 +126,10 @@
     "responseLanguage": "Все названия блюд и ингредиентов — на русском языке."
   },
   "generation": {
-    "confirmPlan": "Подтвердить план",
-    "backToPlan": "Назад к плану",
+    "acceptPlan": "Принять план",
     "generatingPlan": "Генерируем план питания...",
     "generatingShopping": "Составляем список покупок...",
+    "savingPlan": "Сохраняем план...",
     "rateLimited": "Слишком много запросов",
     "saveSuccess": "План сохранён",
     "selectedCount": "Выбрано: {count}",
