@@ -6,6 +6,7 @@ import type { DayPlan, MealItem } from "@/schemas/mealPlanResponse";
 import { DAYS_ORDER } from "@/config/defaults";
 import type { Day, Meal } from "@/schemas/appState";
 import { copyToClipboard } from "@/utils/clipboard";
+import { getCurrentDay } from "@/utils/currentDay";
 
 interface MealPlanViewProps {
   weekPlan: DayPlan[];
@@ -89,6 +90,7 @@ export function MealPlanView({
   onToggle,
 }: MealPlanViewProps) {
   const t = useTranslations();
+  const currentDay = getCurrentDay();
 
   // Create a map for quick lookup by day
   const planByDay = new Map<Day, DayPlan>();
@@ -116,7 +118,12 @@ export function MealPlanView({
           {DAYS_ORDER.map((day) => {
             const dayPlan = planByDay.get(day);
             return (
-              <tr key={day} className="border-t border-border">
+              <tr
+                key={day}
+                className={`border-t border-border ${
+                  day === currentDay ? "bg-accent/5 border-l-2 border-l-accent" : ""
+                }`}
+              >
                 <td className="p-2 text-sm font-medium">
                   {t(`calendar.days.${day}`)}
                 </td>
