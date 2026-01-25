@@ -10,19 +10,20 @@ describe("generateShoppingItemId", () => {
       category: "dairy",
     };
 
-    const id1 = generateShoppingItemId(item, 0);
-    const id2 = generateShoppingItemId(item, 0);
+    const id1 = generateShoppingItemId(item, 0, 0);
+    const id2 = generateShoppingItemId(item, 0, 0);
 
     expect(id1).toBe(id2);
     expect(id1).toMatch(/^item-[a-z0-9]+$/);
   });
 
-  it("generates different IDs for different items or trip indices", () => {
+  it("generates different IDs for different items, trip indices, or item indices", () => {
     const milk: ShoppingItem = { name: "Milk", amount: "1 liter", category: "dairy" };
     const bread: ShoppingItem = { name: "Bread", amount: "1 loaf", category: "bakery" };
 
-    expect(generateShoppingItemId(milk, 0)).not.toBe(generateShoppingItemId(bread, 0));
-    expect(generateShoppingItemId(milk, 0)).not.toBe(generateShoppingItemId(milk, 1));
+    expect(generateShoppingItemId(milk, 0, 0)).not.toBe(generateShoppingItemId(bread, 0, 0));
+    expect(generateShoppingItemId(milk, 0, 0)).not.toBe(generateShoppingItemId(milk, 1, 0));
+    expect(generateShoppingItemId(milk, 0, 0)).not.toBe(generateShoppingItemId(milk, 0, 1));
   });
 
   it("normalizes name and amount (case insensitive, trimmed)", () => {
@@ -32,7 +33,7 @@ describe("generateShoppingItemId", () => {
       { name: "  Milk  ", amount: "  1 liter  ", category: "dairy" },
     ];
 
-    const ids = variants.map((item) => generateShoppingItemId(item, 0));
+    const ids = variants.map((item) => generateShoppingItemId(item, 0, 0));
     expect(new Set(ids).size).toBe(1);
   });
 });

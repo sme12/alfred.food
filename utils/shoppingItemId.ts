@@ -13,11 +13,12 @@ export interface ShoppingTripWithIds extends Omit<ShoppingTrip, "items"> {
 
 /**
  * Generates a deterministic ID for a shopping item based on its properties.
- * Identical items will get the same ID even across different generations.
+ * Includes itemIndex to handle duplicate items within the same trip.
  */
 export function generateShoppingItemId(
   item: ShoppingItem,
-  tripIndex: number
+  tripIndex: number,
+  itemIndex: number
 ): string {
   // Normalize strings: lowercase + trim
   const normalized = [
@@ -25,6 +26,7 @@ export function generateShoppingItemId(
     item.name.toLowerCase().trim(),
     item.amount.toLowerCase().trim(),
     String(tripIndex),
+    String(itemIndex),
   ].join("|");
 
   // Simple hash for shorter IDs
@@ -47,9 +49,9 @@ export function addIdsToShoppingItems(
 ): ShoppingTripWithIds[] {
   return trips.map((trip, tripIndex) => ({
     ...trip,
-    items: trip.items.map((item) => ({
+    items: trip.items.map((item, itemIndex) => ({
       ...item,
-      id: generateShoppingItemId(item, tripIndex),
+      id: generateShoppingItemId(item, tripIndex, itemIndex),
     })),
   }));
 }

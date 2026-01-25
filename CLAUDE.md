@@ -75,8 +75,20 @@ Uses `@ai-sdk/anthropic` with direct Anthropic API (not Vercel AI Gateway).
 
 - Two family members (hardcoded as "vitalik" and "lena" in `config/defaults.ts`)
 - Weekly schedules with three meal slots per day: breakfast, lunch, dinner
-- Each slot has status: "full" (cook), "coffee" (light), or "skip"
+- Each slot has status: "full" (cook), "soup" (lighter meal), "coffee" (light), or "skip"
 - Shopping lists split into trips with items categorized (dairy, meat, produce, etc.)
+
+### Plan Creation Flow
+
+Uses `useMealPlanGeneration` hook with stages: `idle` → `generating-plan` → `plan-ready` → `generating-shopping`
+
+1. User fills form (schedule, cuisines, conditions) at `/new`
+2. "Generate" → AI creates meal plan → user reviews
+3. "Accept Plan" → AI generates shopping list → auto-saves to Redis → redirects to `/`
+
+Key files:
+- `hooks/useMealPlanGeneration.ts` - stage machine, API calls
+- `components/GenerateSection.tsx` - renders UI per stage
 
 ## Plan Mode
 
