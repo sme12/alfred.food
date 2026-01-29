@@ -10,7 +10,7 @@ const UpdateDeletedSchema = z.object({
 // GET /api/plans/[weekKey]/deleted — Get deleted item IDs
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ weekKey: string }> }
+  { params }: { params: Promise<{ weekKey: string }> },
 ) {
   const userId = await getAuthUserId();
 
@@ -29,7 +29,7 @@ export async function GET(
     console.error("Failed to fetch deleted items:", error);
     return NextResponse.json(
       { error: "Failed to fetch deleted items" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -37,7 +37,7 @@ export async function GET(
 // PUT /api/plans/[weekKey]/deleted — Update deleted item IDs
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ weekKey: string }> }
+  { params }: { params: Promise<{ weekKey: string }> },
 ) {
   const userId = await getAuthUserId();
 
@@ -55,7 +55,7 @@ export async function PUT(
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid request body" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -65,7 +65,7 @@ export async function PUT(
     console.error("Failed to update deleted items:", error);
     return NextResponse.json(
       { error: "Failed to update deleted items" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

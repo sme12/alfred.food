@@ -92,10 +92,10 @@ function getMealSlotInfo(state: AppState, day: Day, meal: Meal): MealSlotInfo {
 
 function buildCuisinesSection(
   state: AppState,
-  cuisineNames: Record<string, string>
+  cuisineNames: Record<string, string>,
 ): string {
   const selectedCuisineNames = state.selectedCuisines.map(
-    (id) => cuisineNames[id] || id
+    (id) => cuisineNames[id] || id,
   );
   return `КУХНИ
 Выбранные: ${selectedCuisineNames.join(", ")}
@@ -145,7 +145,7 @@ function buildMealRulesSection(): string {
 export function buildMealPlanPrompt(
   state: AppState,
   cuisineNames: Record<string, string>,
-  previousMeals?: string[]
+  previousMeals?: string[],
 ): string {
   const sections: string[] = [];
 
@@ -162,7 +162,9 @@ export function buildMealPlanPrompt(
     for (const meal of ["breakfast", "lunch", "dinner"] as Meal[]) {
       const info = getMealSlotInfo(state, day, meal);
       if (info.portions > 0) {
-        meals.push(`${MEAL_NAMES[meal]}: ${info.portions} порц. (${info.description})`);
+        meals.push(
+          `${MEAL_NAMES[meal]}: ${info.portions} порц. (${info.description})`,
+        );
       } else {
         meals.push(`${MEAL_NAMES[meal]}: null`);
       }
@@ -216,7 +218,7 @@ JSON-объект:
  */
 export function buildShoppingListPrompt(
   weekPlan: DayPlan[],
-  _state: AppState
+  _state: AppState,
 ): string {
   const sections: string[] = [];
 
@@ -231,13 +233,19 @@ export function buildShoppingListPrompt(
     const meals: string[] = [];
 
     if (dayPlan.breakfast) {
-      meals.push(`Завтрак — ${dayPlan.breakfast.name} (${dayPlan.breakfast.time} мин, ${dayPlan.breakfast.portions} порц.)`);
+      meals.push(
+        `Завтрак — ${dayPlan.breakfast.name} (${dayPlan.breakfast.time} мин, ${dayPlan.breakfast.portions} порц.)`,
+      );
     }
     if (dayPlan.lunch) {
-      meals.push(`Обед — ${dayPlan.lunch.name} (${dayPlan.lunch.time} мин, ${dayPlan.lunch.portions} порц.)`);
+      meals.push(
+        `Обед — ${dayPlan.lunch.name} (${dayPlan.lunch.time} мин, ${dayPlan.lunch.portions} порц.)`,
+      );
     }
     if (dayPlan.dinner) {
-      meals.push(`Ужин — ${dayPlan.dinner.name} (${dayPlan.dinner.time} мин, ${dayPlan.dinner.portions} порц.)`);
+      meals.push(
+        `Ужин — ${dayPlan.dinner.name} (${dayPlan.dinner.time} мин, ${dayPlan.dinner.portions} порц.)`,
+      );
     }
 
     if (meals.length > 0) {
@@ -294,7 +302,7 @@ export function buildPartialRegenerationPrompt(
   currentPlan: DayPlan[],
   slotsToRegenerate: MealSlot[],
   cuisineNames: Record<string, string>,
-  previousMeals?: string[]
+  previousMeals?: string[],
 ): string {
   const sections: string[] = [];
 
@@ -312,7 +320,7 @@ export function buildPartialRegenerationPrompt(
     for (const meal of ["breakfast", "lunch", "dinner"] as Meal[]) {
       const mealItem = dayPlan[meal];
       const isToRegenerate = slotsToRegenerate.some(
-        (s) => s.day === dayPlan.day && s.meal === meal
+        (s) => s.day === dayPlan.day && s.meal === meal,
       );
 
       if (mealItem) {

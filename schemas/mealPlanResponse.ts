@@ -54,7 +54,15 @@ export type ShoppingTrip = z.infer<typeof ShoppingTripSchema>;
 // ============================================
 // Meal slot identifier for selective regeneration
 // ============================================
-export const DaySchema = z.enum(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
+export const DaySchema = z.enum([
+  "mon",
+  "tue",
+  "wed",
+  "thu",
+  "fri",
+  "sat",
+  "sun",
+]);
 export const MealSchema = z.enum(["breakfast", "lunch", "dinner"]);
 
 export const MealSlotSchema = z.object({
@@ -73,7 +81,7 @@ export type MealPlanOnlyResponse = z.infer<typeof MealPlanOnlyResponseSchema>;
 
 // Parse meal plan response (step 1)
 export function parseMealPlanOnlyResponse(
-  data: unknown
+  data: unknown,
 ): MealPlanOnlyResponse | null {
   const result = MealPlanOnlyResponseSchema.safeParse(data);
   return result.success ? result.data : null;
@@ -89,7 +97,7 @@ export type ShoppingListResponse = z.infer<typeof ShoppingListResponseSchema>;
 
 // Parse shopping list response (step 2)
 export function parseShoppingListResponse(
-  data: unknown
+  data: unknown,
 ): ShoppingListResponse | null {
   const result = ShoppingListResponseSchema.safeParse(data);
   return result.success ? result.data : null;

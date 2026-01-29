@@ -33,19 +33,19 @@ export async function POST(request: Request) {
     const rateLimitResult = await checkRateLimit(
       `shopping-list:${userId}`,
       RATE_LIMIT,
-      RATE_WINDOW_SEC
+      RATE_WINDOW_SEC,
     );
 
     if (!rateLimitResult.allowed) {
       const retryAfter = Math.ceil(
-        (rateLimitResult.resetAt - Date.now()) / 1000
+        (rateLimitResult.resetAt - Date.now()) / 1000,
       );
       return NextResponse.json(
         { error: "Rate limit exceeded", retryAfter },
         {
           status: 429,
           headers: { "Retry-After": String(retryAfter) },
-        }
+        },
       );
     }
 
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     if (!parseResult.success) {
       return NextResponse.json(
         { error: "Invalid request body", details: parseResult.error.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -66,8 +66,7 @@ export async function POST(request: Request) {
     const prompt = buildShoppingListPrompt(weekPlan, appState);
 
     // Get model from env (defaults to sonnet)
-    const modelId =
-      process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5-20250929";
+    const modelId = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5-20250929";
 
     // Generate shopping list using AI SDK
     const { output } = await generateText({
@@ -81,7 +80,7 @@ export async function POST(request: Request) {
     console.error("Shopping list generation failed:", error);
     return NextResponse.json(
       { error: "Failed to generate shopping list" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

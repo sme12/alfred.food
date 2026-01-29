@@ -22,10 +22,13 @@ const PLAN_INDEX_KEY = `${KV_PREFIX}:plan-index`;
 async function migrate() {
   // Support both Vercel KV naming (KV_*) and Upstash naming (UPSTASH_*)
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  const token =
+    process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (!url || !token) {
-    throw new Error("Missing Redis credentials. Set KV_REST_API_URL/KV_REST_API_TOKEN or UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN");
+    throw new Error(
+      "Missing Redis credentials. Set KV_REST_API_URL/KV_REST_API_TOKEN or UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN",
+    );
   }
 
   const redis = new Redis({ url, token });
@@ -77,7 +80,11 @@ async function migrate() {
       const score = await redis.zscore(oldIndexKey, weekKey);
       if (score !== null) {
         // Add to shared index (NX = only if not exists)
-        await redis.zadd(PLAN_INDEX_KEY, { nx: true }, { score, member: weekKey });
+        await redis.zadd(
+          PLAN_INDEX_KEY,
+          { nx: true },
+          { score, member: weekKey },
+        );
         console.log(`Added to shared index: ${weekKey} (score: ${score})`);
       }
     }

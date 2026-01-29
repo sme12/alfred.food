@@ -2,7 +2,11 @@
 
 import { useState, useCallback } from "react";
 import type { AppState, Day, Meal } from "@/schemas/appState";
-import type { DayPlan, MealSlot, ShoppingTrip } from "@/schemas/mealPlanResponse";
+import type {
+  DayPlan,
+  MealSlot,
+  ShoppingTrip,
+} from "@/schemas/mealPlanResponse";
 
 export type GenerationStage =
   | "idle" // Initial, form ready
@@ -26,7 +30,7 @@ interface UseMealPlanGenerationReturn {
   generatePlan: (appState: AppState, weekKey: string) => Promise<void>;
   confirmPlan: (
     appState: AppState,
-    onComplete: (shoppingTrips: ShoppingTrip[]) => Promise<void>
+    onComplete: (shoppingTrips: ShoppingTrip[]) => Promise<void>,
   ) => Promise<void>;
   regeneratePlan: (appState: AppState, weekKey: string) => Promise<void>;
   reset: () => void;
@@ -44,38 +48,41 @@ const initialState: GenerationState = {
 export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
   const [state, setState] = useState<GenerationState>(initialState);
 
-  const generatePlan = useCallback(async (appState: AppState, weekKey: string) => {
-    setState((s) => ({ ...s, stage: "generating-plan", error: null }));
+  const generatePlan = useCallback(
+    async (appState: AppState, weekKey: string) => {
+      setState((s) => ({ ...s, stage: "generating-plan", error: null }));
 
-    try {
-      const res = await fetch("/api/generate-meal-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ appState, weekKey }),
-      });
+      try {
+        const res = await fetch("/api/generate-meal-plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ appState, weekKey }),
+        });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Generation failed");
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Generation failed");
+        }
+
+        const { weekPlan } = await res.json();
+        setState({
+          stage: "plan-ready",
+          weekPlan,
+          selectedSlots: new Set(),
+          error: null,
+        });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "Unknown error";
+        setState((s) => ({ ...s, stage: "idle", error: message }));
       }
-
-      const { weekPlan } = await res.json();
-      setState({
-        stage: "plan-ready",
-        weekPlan,
-        selectedSlots: new Set(),
-        error: null,
-      });
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      setState((s) => ({ ...s, stage: "idle", error: message }));
-    }
-  }, []);
+    },
+    [],
+  );
 
   const confirmPlan = useCallback(
     async (
       appState: AppState,
-      onComplete: (shoppingTrips: ShoppingTrip[]) => Promise<void>
+      onComplete: (shoppingTrips: ShoppingTrip[]) => Promise<void>,
     ) => {
       if (!state.weekPlan) return;
 
@@ -105,7 +112,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
         setState((s) => ({ ...s, stage: "plan-ready", error: message }));
       }
     },
-    [state.weekPlan]
+    [state.weekPlan],
   );
 
   const regeneratePlan = useCallback(
@@ -124,7 +131,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
         (slotKey) => {
           const [day, meal] = slotKey.split("-") as [Day, Meal];
           return { day, meal };
-        }
+        },
       );
 
       try {
@@ -135,7 +142,8 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
             appState,
             weekKey,
             currentPlan: regenerateSlots.length > 0 ? currentPlan : undefined,
-            regenerateSlots: regenerateSlots.length > 0 ? regenerateSlots : undefined,
+            regenerateSlots:
+              regenerateSlots.length > 0 ? regenerateSlots : undefined,
           }),
         });
 
@@ -156,7 +164,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
         setState((s) => ({ ...s, stage: "plan-ready", error: message }));
       }
     },
-    [state.weekPlan, state.selectedSlots]
+    [state.weekPlan, state.selectedSlots],
   );
 
   const reset = useCallback(() => {

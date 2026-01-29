@@ -9,7 +9,12 @@ describe("addIdsToShoppingItems", () => {
         label: "Trip 1 (Mon-Thu)",
         items: [
           { name: "Milk", amount: "1 liter", category: "dairy" },
-          { name: "Chicken", amount: "500g", category: "meat", forMeal: "Roast" },
+          {
+            name: "Chicken",
+            amount: "500g",
+            category: "meat",
+            forMeal: "Roast",
+          },
         ],
       },
       {
@@ -33,7 +38,9 @@ describe("addIdsToShoppingItems", () => {
 
   it("handles empty arrays", () => {
     expect(addIdsToShoppingItems([])).toEqual([]);
-    expect(addIdsToShoppingItems([{ label: "Empty", items: [] }])[0].items).toEqual([]);
+    expect(
+      addIdsToShoppingItems([{ label: "Empty", items: [] }])[0].items,
+    ).toEqual([]);
   });
 
   it("generates same ID regardless of item position (order-independent)", () => {
@@ -68,13 +75,22 @@ describe("addIdsToShoppingItems", () => {
 
   it("normalizes name and amount (case insensitive, trimmed)", () => {
     const trips1: ShoppingTrip[] = [
-      { label: "Trip", items: [{ name: "MILK", amount: "1 LITER", category: "dairy" }] },
+      {
+        label: "Trip",
+        items: [{ name: "MILK", amount: "1 LITER", category: "dairy" }],
+      },
     ];
     const trips2: ShoppingTrip[] = [
-      { label: "Trip", items: [{ name: "milk", amount: "1 liter", category: "dairy" }] },
+      {
+        label: "Trip",
+        items: [{ name: "milk", amount: "1 liter", category: "dairy" }],
+      },
     ];
     const trips3: ShoppingTrip[] = [
-      { label: "Trip", items: [{ name: "  Milk  ", amount: "  1 liter  ", category: "dairy" }] },
+      {
+        label: "Trip",
+        items: [{ name: "  Milk  ", amount: "  1 liter  ", category: "dairy" }],
+      },
     ];
 
     const id1 = addIdsToShoppingItems(trips1)[0].items[0].id;
@@ -87,8 +103,14 @@ describe("addIdsToShoppingItems", () => {
 
   it("generates different IDs for same item in different trips", () => {
     const trips: ShoppingTrip[] = [
-      { label: "Trip 1", items: [{ name: "Milk", amount: "1 liter", category: "dairy" }] },
-      { label: "Trip 2", items: [{ name: "Milk", amount: "1 liter", category: "dairy" }] },
+      {
+        label: "Trip 1",
+        items: [{ name: "Milk", amount: "1 liter", category: "dairy" }],
+      },
+      {
+        label: "Trip 2",
+        items: [{ name: "Milk", amount: "1 liter", category: "dairy" }],
+      },
     ];
 
     const result = addIdsToShoppingItems(trips);

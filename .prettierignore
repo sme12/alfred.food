@@ -3,3 +3,10 @@ build
 coverage
 package.json
 pnpm-lock.yaml
+
+# Claude/AI config folders
+.claude
+.agents
+
+# Static assets
+public/animations

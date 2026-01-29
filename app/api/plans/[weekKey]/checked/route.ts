@@ -11,7 +11,7 @@ const UpdateCheckedSchema = z.object({
 // GET /api/plans/[weekKey]/checked — Get checked item IDs
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ weekKey: string }> }
+  { params }: { params: Promise<{ weekKey: string }> },
 ) {
   const userId = await getAuthUserId();
 
@@ -32,7 +32,7 @@ export async function GET(
     console.error("Failed to fetch checked items:", error);
     return NextResponse.json(
       { error: "Failed to fetch checked items" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -40,7 +40,7 @@ export async function GET(
 // PUT /api/plans/[weekKey]/checked — Update checked item IDs
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ weekKey: string }> }
+  { params }: { params: Promise<{ weekKey: string }> },
 ) {
   const userId = await getAuthUserId();
 
@@ -58,7 +58,7 @@ export async function PUT(
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid request body" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -69,7 +69,7 @@ export async function PUT(
     console.error("Failed to update checked items:", error);
     return NextResponse.json(
       { error: "Failed to update checked items" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

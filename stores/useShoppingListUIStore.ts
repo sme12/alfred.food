@@ -26,7 +26,7 @@ interface ShoppingListUIActions {
   toggleCategoryCollapsed: (
     weekKey: string,
     tripIndex: number,
-    category: string
+    category: string,
   ) => void;
   toggleShowOnlyUnchecked: (weekKey: string) => void;
   getWeekState: (weekKey: string) => WeekUIState;
@@ -68,7 +68,8 @@ export const useShoppingListUIStore = create<ShoppingListUIStore>()(
         set((state) => {
           const weekState = state.weekStates[weekKey] ?? DEFAULT_WEEK_STATE;
           const compoundKey = `${tripIndex}-${category}`;
-          const isCollapsed = weekState.collapsedCategories.includes(compoundKey);
+          const isCollapsed =
+            weekState.collapsedCategories.includes(compoundKey);
 
           return {
             weekStates: {
@@ -76,7 +77,9 @@ export const useShoppingListUIStore = create<ShoppingListUIStore>()(
               [weekKey]: {
                 ...weekState,
                 collapsedCategories: isCollapsed
-                  ? weekState.collapsedCategories.filter((k) => k !== compoundKey)
+                  ? weekState.collapsedCategories.filter(
+                      (k) => k !== compoundKey,
+                    )
                   : [...weekState.collapsedCategories, compoundKey],
               },
             },
@@ -104,6 +107,6 @@ export const useShoppingListUIStore = create<ShoppingListUIStore>()(
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );

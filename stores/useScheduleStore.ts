@@ -90,7 +90,7 @@ export const useScheduleStore = create<ScheduleStore>()(
           if (state.selectedCuisines.includes(cuisineId)) {
             return {
               selectedCuisines: state.selectedCuisines.filter(
-                (c) => c !== cuisineId
+                (c) => c !== cuisineId,
               ),
             };
           }
@@ -140,6 +140,6 @@ export const useScheduleStore = create<ScheduleStore>()(
 
         state.setHasHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );

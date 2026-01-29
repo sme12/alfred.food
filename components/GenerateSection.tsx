@@ -15,7 +15,11 @@ interface GenerateSectionProps {
   getWeekKey: () => string;
 }
 
-export function GenerateSection({ appState, isFormValid, getWeekKey }: GenerateSectionProps) {
+export function GenerateSection({
+  appState,
+  isFormValid,
+  getWeekKey,
+}: GenerateSectionProps) {
   const t = useTranslations();
   const router = useRouter();
 
@@ -64,7 +68,9 @@ export function GenerateSection({ appState, isFormValid, getWeekKey }: GenerateS
     return (
       <div className="space-y-4">
         <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
-          <p className="text-destructive font-medium">{t("errors.generation")}</p>
+          <p className="text-destructive font-medium">
+            {t("errors.generation")}
+          </p>
           <p className="text-sm text-muted mt-1">{error}</p>
         </div>
         <button

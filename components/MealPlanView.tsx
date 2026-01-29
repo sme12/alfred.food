@@ -61,9 +61,7 @@ function MealCell({ meal, selectable, isSelected, onToggle }: MealCellProps) {
         type="button"
         onClick={onToggle}
         className={`w-full h-full p-2 text-left rounded transition-colors ${
-          isSelected
-            ? "bg-accent/20 ring-2 ring-accent"
-            : "hover:bg-card-hover"
+          isSelected ? "bg-accent/20 ring-2 ring-accent" : "hover:bg-card-hover"
         }`}
       >
         {content}
@@ -121,7 +119,9 @@ export function MealPlanView({
               <tr
                 key={day}
                 className={`border-t border-border ${
-                  day === currentDay ? "bg-accent/5 border-l-2 border-l-accent" : ""
+                  day === currentDay
+                    ? "bg-accent/5 border-l-2 border-l-accent"
+                    : ""
                 }`}
               >
                 <td className="p-2 text-sm font-medium">

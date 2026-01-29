@@ -7,7 +7,9 @@ import { HomeClient } from "@/components/HomeClient";
 async function getPlans(): Promise<PlanListItem[]> {
   try {
     // Use shared plan index (not per-user)
-    const planKeys = await redis.zrange<string[]>(PLAN_INDEX_KEY, 0, -1, { rev: true });
+    const planKeys = await redis.zrange<string[]>(PLAN_INDEX_KEY, 0, -1, {
+      rev: true,
+    });
 
     if (!planKeys || planKeys.length === 0) {
       return [];

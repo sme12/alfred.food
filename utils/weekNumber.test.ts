@@ -22,7 +22,9 @@ describe("getPlanKey / parsePlanKey", () => {
 
   it("roundtrips correctly", () => {
     const original = { year: 2026, weekNumber: 15 };
-    expect(parsePlanKey(getPlanKey(original.year, original.weekNumber))).toEqual(original);
+    expect(
+      parsePlanKey(getPlanKey(original.year, original.weekNumber)),
+    ).toEqual(original);
   });
 });
 
@@ -30,8 +32,12 @@ describe("formatWeekRange", () => {
   it("formats same month and cross-month ranges", () => {
     expect(formatWeekRange("2026-01-06", "2026-01-12", "ru")).toBe("6-12 янв.");
     expect(formatWeekRange("2026-01-06", "2026-01-12", "en")).toBe("6-12 Jan");
-    expect(formatWeekRange("2025-12-29", "2026-01-04", "ru")).toMatch(/29 дек\. - 4 янв\./);
-    expect(formatWeekRange("2025-12-29", "2026-01-04", "en")).toMatch(/29 Dec - 4 Jan/);
+    expect(formatWeekRange("2025-12-29", "2026-01-04", "ru")).toMatch(
+      /29 дек\. - 4 янв\./,
+    );
+    expect(formatWeekRange("2025-12-29", "2026-01-04", "en")).toMatch(
+      /29 Dec - 4 Jan/,
+    );
   });
 
   it("defaults to Russian locale", () => {

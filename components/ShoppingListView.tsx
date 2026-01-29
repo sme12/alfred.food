@@ -54,9 +54,10 @@ function CategorySection({
 
   const compoundKey = `${tripIndex}-${category}`;
   const weekState = useShoppingListUIStore((s) => s.weekStates[weekKey]);
-  const collapsed = weekState?.collapsedCategories.includes(compoundKey) ?? false;
+  const collapsed =
+    weekState?.collapsedCategories.includes(compoundKey) ?? false;
   const toggleCategoryCollapsed = useShoppingListUIStore(
-    (s) => s.toggleCategoryCollapsed
+    (s) => s.toggleCategoryCollapsed,
   );
 
   const checkedCount = items.filter((item) => checkedIds.has(item.id)).length;
@@ -127,7 +128,7 @@ function TripSection({
   const weekState = useShoppingListUIStore((s) => s.weekStates[weekKey]);
   const collapsed = weekState?.collapsedTrips.includes(tripIndex) ?? false;
   const toggleTripCollapsed = useShoppingListUIStore(
-    (s) => s.toggleTripCollapsed
+    (s) => s.toggleTripCollapsed,
   );
 
   // Group items by category within this trip (excluding deleted)
@@ -147,7 +148,7 @@ function TripSection({
   const activeItems = trip.items.filter((item) => !deletedIds.has(item.id));
   const totalItems = activeItems.length;
   const checkedCount = activeItems.filter((item) =>
-    checkedIds.has(item.id)
+    checkedIds.has(item.id),
   ).length;
 
   // Hide trip if filtering and all items checked
@@ -212,22 +213,22 @@ export function ShoppingListView({
   const weekState = useShoppingListUIStore((s) => s.weekStates[weekKey]);
   const showOnlyUnchecked = weekState?.showOnlyUnchecked ?? false;
   const toggleShowOnlyUnchecked = useShoppingListUIStore(
-    (s) => s.toggleShowOnlyUnchecked
+    (s) => s.toggleShowOnlyUnchecked,
   );
 
   // Calculate totals (excluding deleted items)
   const totalItems = trips.reduce(
     (sum, trip) =>
       sum + trip.items.filter((item) => !deletedIds.has(item.id)).length,
-    0
+    0,
   );
   const totalChecked = trips.reduce(
     (sum, trip) =>
       sum +
       trip.items.filter(
-        (item) => !deletedIds.has(item.id) && checkedIds.has(item.id)
+        (item) => !deletedIds.has(item.id) && checkedIds.has(item.id),
       ).length,
-    0
+    0,
   );
 
   // Check if all items are checked (for empty state)

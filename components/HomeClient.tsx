@@ -52,7 +52,7 @@ export function HomeClient({ initialWeeks }: HomeClientProps) {
         duration: 5000,
       });
     },
-    [deleteItem, restoreItem, tShoppingList]
+    [deleteItem, restoreItem, tShoppingList],
   );
 
   // No plans saved yet

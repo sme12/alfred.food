@@ -17,7 +17,9 @@ export async function GET() {
 
   try {
     // Get all plan keys from the sorted set (sorted by score descending)
-    const planKeys = await redis.zrange<string[]>(PLAN_INDEX_KEY, 0, -1, { rev: true });
+    const planKeys = await redis.zrange<string[]>(PLAN_INDEX_KEY, 0, -1, {
+      rev: true,
+    });
 
     if (!planKeys || planKeys.length === 0) {
       return NextResponse.json({ plans: [] });
@@ -40,7 +42,7 @@ export async function GET() {
     console.error("Failed to fetch plans:", error);
     return NextResponse.json(
       { error: "Failed to fetch plans" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -67,7 +69,7 @@ export async function POST(request: Request) {
     if (!parseResult.success) {
       return NextResponse.json(
         { error: "Invalid request body", details: parseResult.error.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -92,9 +94,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ weekKey, success: true });
   } catch (error) {
     console.error("Failed to save plan:", error);
-    return NextResponse.json(
-      { error: "Failed to save plan" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to save plan" }, { status: 500 });
   }
 }

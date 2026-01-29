@@ -49,7 +49,7 @@ export function parsePlanKey(weekKey: string): {
 export function formatWeekRange(
   weekStart: string,
   weekEnd: string,
-  locale: "ru" | "en" = "ru"
+  locale: "ru" | "en" = "ru",
 ): string {
   const start = parseISO(weekStart);
   const end = parseISO(weekEnd);

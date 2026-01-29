@@ -43,7 +43,7 @@ function getItemContentKey(item: ShoppingItem, tripIndex: number): string {
  * This preserves checked state across regenerations even if item order changes.
  */
 export function addIdsToShoppingItems(
-  trips: ShoppingTrip[]
+  trips: ShoppingTrip[],
 ): ShoppingTripWithIds[] {
   const seenKeys = new Map<string, number>();
 

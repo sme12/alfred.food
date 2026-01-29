@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { AppState, CuisineId, Day, Meal, PersonWeekSchedule } from "@/schemas/appState";
+import type {
+  AppState,
+  CuisineId,
+  Day,
+  Meal,
+  PersonWeekSchedule,
+} from "@/schemas/appState";
 import type { PersonId } from "@/config/defaults";
 import type { WeekOption } from "@/components/WeekSelector";
 import {
@@ -39,16 +45,22 @@ interface UseScheduleReturn {
 export function useSchedule(): UseScheduleReturn {
   const schedules = useScheduleStore((state) => state.schedules);
   const selectedCuisines = useScheduleStore((state) => state.selectedCuisines);
-  const specialConditions = useScheduleStore((state) => state.specialConditions);
+  const specialConditions = useScheduleStore(
+    (state) => state.specialConditions,
+  );
   const weekOption = useScheduleStore((state) => state.weekOption);
   const customWeekNumber = useScheduleStore((state) => state.customWeekNumber);
   const hasHydrated = useScheduleStore((state) => state._hasHydrated);
 
   const toggleSlot = useScheduleStore((state) => state.toggleSlot);
   const toggleCuisine = useScheduleStore((state) => state.toggleCuisine);
-  const setSpecialConditions = useScheduleStore((state) => state.setSpecialConditions);
+  const setSpecialConditions = useScheduleStore(
+    (state) => state.setSpecialConditions,
+  );
   const setWeekOption = useScheduleStore((state) => state.setWeekOption);
-  const setCustomWeekNumber = useScheduleStore((state) => state.setCustomWeekNumber);
+  const setCustomWeekNumber = useScheduleStore(
+    (state) => state.setCustomWeekNumber,
+  );
 
   const [currentWeekInfo, setCurrentWeekInfo] = useState(getCurrentWeekInfo);
 
@@ -104,7 +116,13 @@ export function useSchedule(): UseScheduleReturn {
     if (weekOption === "next") return nextWeekKey;
     // custom: build key from year + customWeekNumber
     return getPlanKey(currentWeekInfo.year, customWeekNumber!);
-  }, [weekOption, customWeekNumber, currentWeekInfo.weekKey, currentWeekInfo.year, nextWeekKey]);
+  }, [
+    weekOption,
+    customWeekNumber,
+    currentWeekInfo.weekKey,
+    currentWeekInfo.year,
+    nextWeekKey,
+  ]);
 
   // Valid if at least one cuisine is selected and week is valid
   const isValid =

@@ -101,8 +101,12 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
         }
 
         const planData = await planRes.json();
-        const checkedData = checkedRes.ok ? await checkedRes.json() : { checkedIds: [] };
-        const deletedData = deletedRes.ok ? await deletedRes.json() : { deletedIds: [] };
+        const checkedData = checkedRes.ok
+          ? await checkedRes.json()
+          : { checkedIds: [] };
+        const deletedData = deletedRes.ok
+          ? await deletedRes.json()
+          : { deletedIds: [] };
 
         setState((s) => ({
           ...s,
@@ -187,7 +191,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
         console.error("Failed to persist checked state:", error);
       }
     },
-    [state.currentWeekKey, state.checkedIds]
+    [state.currentWeekKey, state.checkedIds],
   );
 
   const deleteItem = useCallback(
@@ -215,7 +219,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
         console.error("Failed to persist deleted state:", error);
       }
     },
-    [state.currentWeekKey, state.deletedIds]
+    [state.currentWeekKey, state.deletedIds],
   );
 
   const restoreItem = useCallback(
@@ -243,7 +247,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
         console.error("Failed to persist restored state:", error);
       }
     },
-    [state.currentWeekKey, state.deletedIds]
+    [state.currentWeekKey, state.deletedIds],
   );
 
   const deletePlan = useCallback(async (): Promise<boolean> => {
@@ -262,14 +266,15 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
 
       // Remove from available weeks
       const newWeeks = state.availableWeeks.filter(
-        (w) => w.weekKey !== state.currentWeekKey
+        (w) => w.weekKey !== state.currentWeekKey,
       );
 
       // Navigate to adjacent week or clear if none left
       const currentIndex = state.availableWeeks.findIndex(
-        (w) => w.weekKey === state.currentWeekKey
+        (w) => w.weekKey === state.currentWeekKey,
       );
-      const nextWeek = newWeeks[currentIndex] ?? newWeeks[currentIndex - 1] ?? null;
+      const nextWeek =
+        newWeeks[currentIndex] ?? newWeeks[currentIndex - 1] ?? null;
 
       setState((s) => ({
         ...s,
@@ -298,13 +303,13 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
   // Compute navigation availability
   const hasPrev = state.currentWeekKey
     ? state.availableWeeks.some(
-        (w) => w.weekKey === getPreviousWeekKey(state.currentWeekKey!)
+        (w) => w.weekKey === getPreviousWeekKey(state.currentWeekKey!),
       )
     : false;
 
   const hasNext = state.currentWeekKey
     ? state.availableWeeks.some(
-        (w) => w.weekKey === getNextWeekKey(state.currentWeekKey!)
+        (w) => w.weekKey === getNextWeekKey(state.currentWeekKey!),
       )
     : false;
 
@@ -315,7 +320,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
         result: {
           ...state.rawPlan.result,
           shoppingTrips: addIdsToShoppingItems(
-            state.rawPlan.result.shoppingTrips
+            state.rawPlan.result.shoppingTrips,
           ),
         },
       }

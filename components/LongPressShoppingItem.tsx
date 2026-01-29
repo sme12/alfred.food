@@ -47,9 +47,7 @@ export function LongPressShoppingItem({
           WebkitUserSelect: "none",
         }}
         className={`relative w-full flex items-center gap-3 h-12 px-3 rounded-lg transition-colors select-none cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-          isChecked
-            ? "bg-card/50 text-muted"
-            : "bg-card hover:bg-card-hover"
+          isChecked ? "bg-card/50 text-muted" : "bg-card hover:bg-card-hover"
         }`}
       >
         {/* Progress bar */}

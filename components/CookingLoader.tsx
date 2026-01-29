@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 const DotLottieReact = dynamic(
   () =>
     import("@lottiefiles/dotlottie-react").then((mod) => mod.DotLottieReact),
-  { ssr: false }
+  { ssr: false },
 );
 
 export function CookingLoader() {

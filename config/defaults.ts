@@ -109,7 +109,12 @@ export function createDefaultWeekSchedule(): Record<Day, DaySchedule> {
 }
 
 // Status cycle on click
-export const STATUS_CYCLE: MealSlotStatus[] = ["full", "soup", "coffee", "skip"];
+export const STATUS_CYCLE: MealSlotStatus[] = [
+  "full",
+  "soup",
+  "coffee",
+  "skip",
+];
 
 // Status emojis
 export const STATUS_EMOJI: Record<MealSlotStatus, string> = {

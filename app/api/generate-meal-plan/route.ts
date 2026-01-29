@@ -56,19 +56,19 @@ export async function POST(request: Request) {
     const rateLimitResult = await checkRateLimit(
       `meal-plan:${userId}`,
       RATE_LIMIT,
-      RATE_WINDOW_SEC
+      RATE_WINDOW_SEC,
     );
 
     if (!rateLimitResult.allowed) {
       const retryAfter = Math.ceil(
-        (rateLimitResult.resetAt - Date.now()) / 1000
+        (rateLimitResult.resetAt - Date.now()) / 1000,
       );
       return NextResponse.json(
         { error: "Rate limit exceeded", retryAfter },
         {
           status: 429,
           headers: { "Retry-After": String(retryAfter) },
-        }
+        },
       );
     }
 
@@ -79,11 +79,12 @@ export async function POST(request: Request) {
     if (!parseResult.success) {
       return NextResponse.json(
         { error: "Invalid request body", details: parseResult.error.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const { appState, weekKey, currentPlan, regenerateSlots } = parseResult.data;
+    const { appState, weekKey, currentPlan, regenerateSlots } =
+      parseResult.data;
 
     // Fetch previous week's meals if weekKey provided
     let previousMeals: string[] | undefined;
@@ -97,7 +98,7 @@ export async function POST(request: Request) {
           previousMeals = prevPlan.result.weekPlan.flatMap((day) =>
             [day.breakfast, day.lunch, day.dinner]
               .filter((m) => m !== null)
-              .map((m) => m.name)
+              .map((m) => m.name),
           );
         }
       }
@@ -113,13 +114,12 @@ export async function POST(request: Request) {
           currentPlan,
           regenerateSlots,
           CUISINE_NAMES,
-          previousMeals
+          previousMeals,
         )
       : buildMealPlanPrompt(appState, CUISINE_NAMES, previousMeals);
 
     // Get model from env (defaults to sonnet)
-    const modelId =
-      process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5-20250929";
+    const modelId = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5-20250929";
 
     // Generate meal plan using AI SDK
     const { output } = await generateText({
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
     console.error("Meal plan generation failed:", error);
     return NextResponse.json(
       { error: "Failed to generate meal plan" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

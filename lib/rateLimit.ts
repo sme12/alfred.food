@@ -15,7 +15,7 @@ export interface RateLimitResult {
 export async function checkRateLimit(
   identifier: string,
   limit: number,
-  windowSec: number
+  windowSec: number,
 ): Promise<RateLimitResult> {
   const key = `${KV_PREFIX}:ratelimit:${identifier}`;
 

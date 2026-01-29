@@ -123,7 +123,7 @@ export function useLongPress({
 
       delayRafRef.current = requestAnimationFrame(checkDelay);
     },
-    []
+    [],
   );
 
   const endPress = useCallback(
@@ -141,7 +141,7 @@ export function useLongPress({
         onTapRef.current();
       }
     },
-    [cancelPress]
+    [cancelPress],
   );
 
   const movePress = useCallback(
@@ -153,7 +153,7 @@ export function useLongPress({
         cancelPress();
       }
     },
-    [cancelPress]
+    [cancelPress],
   );
 
   // Touch handlers (mobile)
@@ -162,7 +162,7 @@ export function useLongPress({
       const t = e.touches[0];
       startPress(t.clientX, t.clientY, "touch");
     },
-    [startPress]
+    [startPress],
   );
 
   const onTouchEnd = useCallback(() => {
@@ -174,7 +174,7 @@ export function useLongPress({
       const t = e.touches[0];
       movePress(t.clientX, t.clientY);
     },
-    [movePress]
+    [movePress],
   );
 
   const onTouchCancel = useCallback(() => {
@@ -188,7 +188,7 @@ export function useLongPress({
       if (e.pointerType === "touch") return;
       startPress(e.clientX, e.clientY, "pointer");
     },
-    [startPress]
+    [startPress],
   );
 
   const onPointerUp = useCallback(
@@ -196,7 +196,7 @@ export function useLongPress({
       if (e.pointerType === "touch") return;
       endPress("pointer");
     },
-    [endPress]
+    [endPress],
   );
 
   const onPointerMove = useCallback(
@@ -204,7 +204,7 @@ export function useLongPress({
       if (e.pointerType === "touch") return;
       movePress(e.clientX, e.clientY);
     },
-    [movePress]
+    [movePress],
   );
 
   const onPointerCancel = useCallback(
@@ -212,7 +212,7 @@ export function useLongPress({
       if (e.pointerType === "touch") return;
       cancelPress();
     },
-    [cancelPress]
+    [cancelPress],
   );
 
   const onPointerLeave = useCallback(() => {

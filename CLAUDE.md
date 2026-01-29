@@ -55,10 +55,12 @@ Set `BYPASS_AUTH=true` in `.env.local` to skip Clerk auth. Never enable in produ
 Uses `@ai-sdk/anthropic` with direct Anthropic API (not Vercel AI Gateway).
 
 **Environment variables:**
+
 - `ANTHROPIC_API_KEY` - Your Anthropic API key (required)
 - `ANTHROPIC_MODEL` - Model ID (default: `claude-sonnet-4-5-20250929`, use opus for production)
 
 **API routes:**
+
 - `POST /api/generate-meal-plan` - Stage 1: generates meal plan from AppState
 - `POST /api/generate-shopping-list` - Stage 2: generates shopping list from confirmed plan
 
@@ -87,6 +89,7 @@ Uses `useMealPlanGeneration` hook with stages: `idle` → `generating-plan` → 
 3. "Accept Plan" → AI generates shopping list → auto-saves to Redis → redirects to `/`
 
 Key files:
+
 - `hooks/useMealPlanGeneration.ts` - stage machine, API calls
 - `components/GenerateSection.tsx` - renders UI per stage
 
