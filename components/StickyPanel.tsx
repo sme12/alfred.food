@@ -8,7 +8,7 @@ export function StickyPanel() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border"
+      className="fixed bottom-0 left-0 right-0 z-30 bg-background/80 backdrop-blur-sm border-t border-border"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="max-w-lg mx-auto p-4">

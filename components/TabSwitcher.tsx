@@ -17,8 +17,14 @@ export function TabSwitcher({ activeTab, onTabChange }: TabSwitcherProps) {
     { id: "shoppingList", label: t("shoppingList") },
   ];
 
+  {
+    /* transform hack to make sure tabs are not glitching */
+  }
   return (
-    <div className="flex bg-card rounded-lg p-1 sticky top-0 z-10">
+    <div
+      className="flex bg-card rounded-lg p-1 sticky top-0 z-20"
+      style={{ transform: "translate3d(0,0,0)" }}
+    >
       {tabs.map((tab) => (
         <button
           key={tab.id}

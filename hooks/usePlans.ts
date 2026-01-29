@@ -31,6 +31,7 @@ interface PlansState {
   currentWeekKey: string | null;
   rawPlan: PersistedPlan | null;
   checkedIds: Set<string>;
+  deletedIds: Set<string>;
   weekInfo: WeekInfo | null;
   loading: boolean;
   deleting: boolean;
@@ -42,6 +43,7 @@ interface UsePlansReturn {
   currentWeekKey: string | null;
   plan: ProcessedPlan | null;
   checkedIds: Set<string>;
+  deletedIds: Set<string>;
   weekInfo: WeekInfo | null;
   loading: boolean;
   deleting: boolean;
@@ -50,6 +52,8 @@ interface UsePlansReturn {
   goNext: () => void;
   goPrev: () => void;
   toggleChecked: (itemId: string) => void;
+  deleteItem: (itemId: string) => void;
+  restoreItem: (itemId: string) => void;
   deletePlan: () => Promise<boolean>;
   hasPrev: boolean;
   hasNext: boolean;
@@ -61,6 +65,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
     currentWeekKey: initialWeeks[0]?.weekKey ?? null,
     rawPlan: null,
     checkedIds: new Set(),
+    deletedIds: new Set(),
     weekInfo: initialWeeks[0]
       ? getWeekInfoByKey(initialWeeks[0].weekKey)
       : null,
@@ -80,10 +85,11 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
       setState((s) => ({ ...s, loading: true, error: null }));
 
       try {
-        // Fetch plan and checked items in parallel
-        const [planRes, checkedRes] = await Promise.all([
+        // Fetch plan, checked, and deleted items in parallel
+        const [planRes, checkedRes, deletedRes] = await Promise.all([
           fetch(`/api/plans/${state.currentWeekKey}`),
           fetch(`/api/plans/${state.currentWeekKey}/checked`),
+          fetch(`/api/plans/${state.currentWeekKey}/deleted`),
         ]);
 
         if (!planRes.ok) {
@@ -96,11 +102,13 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
 
         const planData = await planRes.json();
         const checkedData = checkedRes.ok ? await checkedRes.json() : { checkedIds: [] };
+        const deletedData = deletedRes.ok ? await deletedRes.json() : { deletedIds: [] };
 
         setState((s) => ({
           ...s,
           rawPlan: planData.plan,
           checkedIds: new Set(checkedData.checkedIds || []),
+          deletedIds: new Set(deletedData.deletedIds || []),
           loading: false,
         }));
       } catch (error) {
@@ -177,10 +185,65 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
         });
       } catch (error) {
         console.error("Failed to persist checked state:", error);
-        // Could revert optimistic update here, but for now we keep it
       }
     },
     [state.currentWeekKey, state.checkedIds]
+  );
+
+  const deleteItem = useCallback(
+    async (itemId: string) => {
+      if (!state.currentWeekKey) return;
+
+      // Optimistic update
+      setState((s) => {
+        const newDeleted = new Set(s.deletedIds);
+        newDeleted.add(itemId);
+        return { ...s, deletedIds: newDeleted };
+      });
+
+      // Persist to server
+      try {
+        const newDeleted = new Set(state.deletedIds);
+        newDeleted.add(itemId);
+
+        await fetch(`/api/plans/${state.currentWeekKey}/deleted`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ deletedIds: Array.from(newDeleted) }),
+        });
+      } catch (error) {
+        console.error("Failed to persist deleted state:", error);
+      }
+    },
+    [state.currentWeekKey, state.deletedIds]
+  );
+
+  const restoreItem = useCallback(
+    async (itemId: string) => {
+      if (!state.currentWeekKey) return;
+
+      // Optimistic update
+      setState((s) => {
+        const newDeleted = new Set(s.deletedIds);
+        newDeleted.delete(itemId);
+        return { ...s, deletedIds: newDeleted };
+      });
+
+      // Persist to server
+      try {
+        const newDeleted = new Set(state.deletedIds);
+        newDeleted.delete(itemId);
+
+        await fetch(`/api/plans/${state.currentWeekKey}/deleted`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ deletedIds: Array.from(newDeleted) }),
+        });
+      } catch (error) {
+        console.error("Failed to persist restored state:", error);
+      }
+    },
+    [state.currentWeekKey, state.deletedIds]
   );
 
   const deletePlan = useCallback(async (): Promise<boolean> => {
@@ -214,6 +277,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
         currentWeekKey: nextWeek?.weekKey ?? null,
         rawPlan: null,
         checkedIds: new Set(),
+        deletedIds: new Set(),
         weekInfo: nextWeek ? getWeekInfoByKey(nextWeek.weekKey) : null,
         loading: nextWeek !== null,
         deleting: false,
@@ -262,6 +326,7 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
     currentWeekKey: state.currentWeekKey,
     plan: processedPlan,
     checkedIds: state.checkedIds,
+    deletedIds: state.deletedIds,
     weekInfo: state.weekInfo,
     loading: state.loading,
     deleting: state.deleting,
@@ -270,6 +335,8 @@ export function usePlans(initialWeeks: PlanListItem[] = []): UsePlansReturn {
     goNext,
     goPrev,
     toggleChecked,
+    deleteItem,
+    restoreItem,
     deletePlan,
     hasPrev,
     hasNext,

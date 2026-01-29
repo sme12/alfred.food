@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import type { PlanListItem } from "@/schemas/persistedPlan";
 import { usePlans } from "@/hooks/usePlans";
 import { EmptyState } from "@/components/EmptyState";
@@ -25,6 +26,7 @@ export function HomeClient({ initialWeeks }: HomeClientProps) {
     plan,
     weekInfo,
     checkedIds,
+    deletedIds,
     loading,
     deleting,
     error,
@@ -33,8 +35,25 @@ export function HomeClient({ initialWeeks }: HomeClientProps) {
     hasPrev,
     hasNext,
     toggleChecked,
+    deleteItem,
+    restoreItem,
     deletePlan,
   } = usePlans(initialWeeks);
+  const tShoppingList = useTranslations("shoppingList");
+
+  const handleDeleteItem = useCallback(
+    (itemId: string) => {
+      deleteItem(itemId);
+      toast(tShoppingList("itemDeleted"), {
+        action: {
+          label: tShoppingList("undo"),
+          onClick: () => restoreItem(itemId),
+        },
+        duration: 5000,
+      });
+    },
+    [deleteItem, restoreItem, tShoppingList]
+  );
 
   // No plans saved yet
   if (initialWeeks.length === 0) {
@@ -74,7 +93,9 @@ export function HomeClient({ initialWeeks }: HomeClientProps) {
             <ShoppingListView
               trips={plan.result.shoppingTrips}
               checkedIds={checkedIds}
+              deletedIds={deletedIds}
               onToggle={toggleChecked}
+              onDelete={handleDeleteItem}
               weekKey={weekInfo!.weekKey}
             />
           )

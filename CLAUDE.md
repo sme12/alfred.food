@@ -90,6 +90,10 @@ Key files:
 - `hooks/useMealPlanGeneration.ts` - stage machine, API calls
 - `components/GenerateSection.tsx` - renders UI per stage
 
+## Verification
+
+- Use `pnpm tsc --noEmit` for verification. Do not run `pnpm build` — type check is sufficient.
+
 ## Plan Mode
 
 - Make the plan extremely concise. Sacrifice grammar for the sake of concision.

@@ -2,15 +2,19 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { AnimatePresence } from "motion/react";
 import type { ShoppingItemWithId, Category } from "@/schemas/mealPlanResponse";
 import type { ShoppingTripWithIds } from "@/utils/shoppingItemId";
 import { CATEGORY_EMOJI } from "@/config/defaults";
 import { useShoppingListUIStore } from "@/stores/useShoppingListUIStore";
+import { LongPressShoppingItem } from "./LongPressShoppingItem";
 
 interface ShoppingListViewProps {
   trips: ShoppingTripWithIds[];
   checkedIds: Set<string>;
+  deletedIds: Set<string>;
   onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
   weekKey: string;
 }
 
@@ -29,7 +33,9 @@ interface CategorySectionProps {
   category: Category;
   items: ShoppingItemWithId[];
   checkedIds: Set<string>;
+  deletedIds: Set<string>;
   onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
   tripIndex: number;
   weekKey: string;
 }
@@ -38,7 +44,9 @@ function CategorySection({
   category,
   items,
   checkedIds,
+  deletedIds,
   onToggle,
+  onDelete,
   tripIndex,
   weekKey,
 }: CategorySectionProps) {
@@ -76,37 +84,19 @@ function CategorySection({
 
       {!collapsed && (
         <div className="space-y-1">
-          {items.map((item) => {
-            const isChecked = checkedIds.has(item.id);
-            return (
-              <button
-                key={item.id}
-                onClick={() => onToggle(item.id)}
-                role="checkbox"
-                aria-checked={isChecked}
-                className={`w-full flex items-center gap-3 h-12 px-3 rounded-lg transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                  isChecked
-                    ? "bg-card/50 text-muted line-through"
-                    : "bg-card hover:bg-card-hover"
-                }`}
-              >
-                <div
-                  aria-hidden="true"
-                  className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                    isChecked
-                      ? "bg-success border-success text-white"
-                      : "border-border"
-                  }`}
-                >
-                  {isChecked && <span className="text-xs">✓</span>}
-                </div>
-                <span className="flex-1 text-left text-sm min-w-0 truncate">
-                  {item.name}
-                </span>
-                <span className="text-xs text-muted shrink-0">{item.amount}</span>
-              </button>
-            );
-          })}
+          <AnimatePresence mode="popLayout">
+            {items
+              .filter((item) => !deletedIds.has(item.id))
+              .map((item) => (
+                <LongPressShoppingItem
+                  key={item.id}
+                  item={item}
+                  isChecked={checkedIds.has(item.id)}
+                  onToggle={onToggle}
+                  onDelete={onDelete}
+                />
+              ))}
+          </AnimatePresence>
         </div>
       )}
     </div>
@@ -118,7 +108,9 @@ interface TripSectionProps {
   tripIndex: number;
   weekKey: string;
   checkedIds: Set<string>;
+  deletedIds: Set<string>;
   onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
   showOnlyUnchecked: boolean;
 }
 
@@ -127,7 +119,9 @@ function TripSection({
   tripIndex,
   weekKey,
   checkedIds,
+  deletedIds,
   onToggle,
+  onDelete,
   showOnlyUnchecked,
 }: TripSectionProps) {
   const weekState = useShoppingListUIStore((s) => s.weekStates[weekKey]);
@@ -136,20 +130,23 @@ function TripSection({
     (s) => s.toggleTripCollapsed
   );
 
-  // Group items by category within this trip
+  // Group items by category within this trip (excluding deleted)
   const itemsByCategory = useMemo(() => {
     const grouped = new Map<Category, ShoppingItemWithId[]>();
     for (const item of trip.items) {
+      if (deletedIds.has(item.id)) continue;
       if (showOnlyUnchecked && checkedIds.has(item.id)) continue;
       const existing = grouped.get(item.category) || [];
       existing.push(item);
       grouped.set(item.category, existing);
     }
     return grouped;
-  }, [trip.items, checkedIds, showOnlyUnchecked]);
+  }, [trip.items, checkedIds, deletedIds, showOnlyUnchecked]);
 
-  const totalItems = trip.items.length;
-  const checkedCount = trip.items.filter((item) =>
+  // Calculate counts excluding deleted items
+  const activeItems = trip.items.filter((item) => !deletedIds.has(item.id));
+  const totalItems = activeItems.length;
+  const checkedCount = activeItems.filter((item) =>
     checkedIds.has(item.id)
   ).length;
 
@@ -188,7 +185,9 @@ function TripSection({
                 category={category}
                 items={items}
                 checkedIds={checkedIds}
+                deletedIds={deletedIds}
                 onToggle={onToggle}
+                onDelete={onDelete}
                 tripIndex={tripIndex}
                 weekKey={weekKey}
               />
@@ -203,7 +202,9 @@ function TripSection({
 export function ShoppingListView({
   trips,
   checkedIds,
+  deletedIds,
   onToggle,
+  onDelete,
   weekKey,
 }: ShoppingListViewProps) {
   const t = useTranslations("shoppingList");
@@ -214,11 +215,18 @@ export function ShoppingListView({
     (s) => s.toggleShowOnlyUnchecked
   );
 
-  // Calculate totals
-  const totalItems = trips.reduce((sum, trip) => sum + trip.items.length, 0);
+  // Calculate totals (excluding deleted items)
+  const totalItems = trips.reduce(
+    (sum, trip) =>
+      sum + trip.items.filter((item) => !deletedIds.has(item.id)).length,
+    0
+  );
   const totalChecked = trips.reduce(
     (sum, trip) =>
-      sum + trip.items.filter((item) => checkedIds.has(item.id)).length,
+      sum +
+      trip.items.filter(
+        (item) => !deletedIds.has(item.id) && checkedIds.has(item.id)
+      ).length,
     0
   );
 
@@ -253,7 +261,9 @@ export function ShoppingListView({
           tripIndex={index}
           weekKey={weekKey}
           checkedIds={checkedIds}
+          deletedIds={deletedIds}
           onToggle={onToggle}
+          onDelete={onDelete}
           showOnlyUnchecked={showOnlyUnchecked}
         />
       ))}
