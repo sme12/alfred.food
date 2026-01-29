@@ -178,7 +178,7 @@ export function useLongPress({
   );
 
   const onTouchCancel = useCallback(() => {
-    if (fillingRef.current || pressedBy.current === "touch") return;
+    if (pressedBy.current !== "touch") return;
     cancelPress();
   }, [cancelPress]);
 
