@@ -12,46 +12,55 @@ export interface ShoppingTripWithIds extends Omit<ShoppingTrip, "items"> {
 }
 
 /**
- * Generates a deterministic ID for a shopping item based on its properties.
- * Includes itemIndex to handle duplicate items within the same trip.
+ * Simple string hash function.
  */
-export function generateShoppingItemId(
-  item: ShoppingItem,
-  tripIndex: number,
-  itemIndex: number
-): string {
-  // Normalize strings: lowercase + trim
-  const normalized = [
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+}
+
+/**
+ * Generates a content-based key for deduplication.
+ * Does NOT include position - only content that matters for identity.
+ */
+function getItemContentKey(item: ShoppingItem, tripIndex: number): string {
+  return [
     item.category,
     item.name.toLowerCase().trim(),
     item.amount.toLowerCase().trim(),
     String(tripIndex),
-    String(itemIndex),
   ].join("|");
-
-  // Simple hash for shorter IDs
-  let hash = 0;
-  for (let i = 0; i < normalized.length; i++) {
-    const char = normalized.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-
-  return `item-${Math.abs(hash).toString(36)}`;
 }
 
 /**
  * Adds stable IDs to all items in shopping trips.
- * Called when receiving Claude's response before saving.
+ * IDs are based on content only. Duplicate items get a suffix (-2, -3, etc).
+ * This preserves checked state across regenerations even if item order changes.
  */
 export function addIdsToShoppingItems(
   trips: ShoppingTrip[]
 ): ShoppingTripWithIds[] {
+  const seenKeys = new Map<string, number>();
+
   return trips.map((trip, tripIndex) => ({
     ...trip,
-    items: trip.items.map((item, itemIndex) => ({
-      ...item,
-      id: generateShoppingItemId(item, tripIndex, itemIndex),
-    })),
+    items: trip.items.map((item) => {
+      const contentKey = getItemContentKey(item, tripIndex);
+      const baseId = `item-${hashString(contentKey).toString(36)}`;
+
+      // Track occurrences for duplicate handling
+      const count = seenKeys.get(contentKey) ?? 0;
+      seenKeys.set(contentKey, count + 1);
+
+      // First occurrence: no suffix. Duplicates: -2, -3, etc.
+      const id = count === 0 ? baseId : `${baseId}-${count + 1}`;
+
+      return { ...item, id };
+    }),
   }));
 }
