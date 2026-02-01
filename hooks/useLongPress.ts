@@ -1,10 +1,8 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import type { RefObject } from "react";
 
-const LONG_PRESS_DELAY = 300;
-const FILL_DURATION = 1000;
+const LONG_PRESS_DELAY = 400;
 const MOVE_THRESHOLD = 10;
 
 function triggerHaptic(pattern: number | number[] = 15) {
@@ -15,7 +13,7 @@ function triggerHaptic(pattern: number | number[] = 15) {
 
 interface UseLongPressOptions {
   onTap: () => void;
-  onLongPressComplete: () => void;
+  onLongPress: () => void;
 }
 
 interface LongPressHandlers {
@@ -32,62 +30,28 @@ interface LongPressHandlers {
 }
 
 interface UseLongPressReturn {
-  filling: boolean;
+  pressing: boolean;
   handlers: LongPressHandlers;
-  progressRef: RefObject<HTMLDivElement | null>;
 }
 
 export function useLongPress({
   onTap,
-  onLongPressComplete,
+  onLongPress,
 }: UseLongPressOptions): UseLongPressReturn {
-  const [filling, setFilling] = useState(false);
-  const fillingRef = useRef(false);
+  const [pressing, setPressing] = useState(false);
   const delayRafRef = useRef(0);
   const pressStartRef = useRef(0);
   const didLongPress = useRef(false);
   const startPos = useRef({ x: 0, y: 0 });
   const pressedBy = useRef<"touch" | "pointer" | null>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
 
   // Keep callbacks fresh without re-creating handlers
-  const onLongPressCompleteRef = useRef(onLongPressComplete);
+  const onLongPressRef = useRef(onLongPress);
   const onTapRef = useRef(onTap);
   useEffect(() => {
-    onLongPressCompleteRef.current = onLongPressComplete;
+    onLongPressRef.current = onLongPress;
     onTapRef.current = onTap;
   });
-
-  // rAF loop for fill progress animation
-  useEffect(() => {
-    const el = progressRef.current;
-    if (!el) return;
-
-    if (!filling) {
-      el.style.transform = "scaleX(0)";
-      el.style.opacity = "0";
-      return;
-    }
-
-    el.style.opacity = "1";
-    const start = performance.now();
-    let rafId = 0;
-
-    function tick(now: number) {
-      const progress = Math.min((now - start) / FILL_DURATION, 1);
-      el!.style.transform = `scaleX(${progress})`;
-
-      if (progress >= 1) {
-        triggerHaptic([20, 30, 20]);
-        onLongPressCompleteRef.current();
-        return;
-      }
-      rafId = requestAnimationFrame(tick);
-    }
-
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, [filling]);
 
   // Cleanup delay rAF on unmount
   useEffect(() => {
@@ -96,8 +60,7 @@ export function useLongPress({
 
   const cancelPress = useCallback(() => {
     cancelAnimationFrame(delayRafRef.current);
-    fillingRef.current = false;
-    setFilling(false);
+    setPressing(false);
     pressedBy.current = null;
   }, []);
 
@@ -109,13 +72,15 @@ export function useLongPress({
       didLongPress.current = false;
       startPos.current = { x, y };
       pressStartRef.current = performance.now();
+      setPressing(true);
 
       function checkDelay(now: number) {
         if (now - pressStartRef.current >= LONG_PRESS_DELAY) {
           didLongPress.current = true;
           triggerHaptic(15);
-          fillingRef.current = true;
-          setFilling(true);
+          onLongPressRef.current();
+          setPressing(false);
+          pressedBy.current = null;
           return;
         }
         delayRafRef.current = requestAnimationFrame(checkDelay);
@@ -129,14 +94,11 @@ export function useLongPress({
   const endPress = useCallback(
     (source: "touch" | "pointer") => {
       if (pressedBy.current !== source) return;
-      if (fillingRef.current) {
-        cancelPress();
-        return;
-      }
       cancelAnimationFrame(delayRafRef.current);
       const wasLongPress = didLongPress.current;
       didLongPress.current = false;
       pressedBy.current = null;
+      setPressing(false);
       if (!wasLongPress) {
         onTapRef.current();
       }
@@ -224,8 +186,7 @@ export function useLongPress({
   }, []);
 
   return {
-    filling,
-    progressRef,
+    pressing,
     handlers: {
       onTouchStart,
       onTouchEnd,
