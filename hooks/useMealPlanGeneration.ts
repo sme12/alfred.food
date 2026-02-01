@@ -18,6 +18,7 @@ interface GenerationState {
   stage: GenerationStage;
   weekPlan: DayPlan[] | null;
   selectedSlots: Set<string>; // format: "mon-breakfast"
+  regeneratingSlots: Set<string>; // slots currently being regenerated
   error: string | null;
 }
 
@@ -25,6 +26,7 @@ interface UseMealPlanGenerationReturn {
   stage: GenerationStage;
   weekPlan: DayPlan[] | null;
   selectedSlots: Set<string>;
+  regeneratingSlots: Set<string>;
   error: string | null;
 
   generatePlan: (appState: AppState, weekKey: string) => Promise<void>;
@@ -42,6 +44,7 @@ const initialState: GenerationState = {
   stage: "idle",
   weekPlan: null,
   selectedSlots: new Set(),
+  regeneratingSlots: new Set(),
   error: null,
 };
 
@@ -69,6 +72,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
           stage: "plan-ready",
           weekPlan,
           selectedSlots: new Set(),
+          regeneratingSlots: new Set(),
           error: null,
         });
       } catch (e) {
@@ -123,6 +127,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
       setState((s) => ({
         ...s,
         stage: "generating-plan",
+        regeneratingSlots: new Set(selectedSlots),
         error: null,
       }));
 
@@ -157,11 +162,17 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
           stage: "plan-ready",
           weekPlan,
           selectedSlots: new Set(),
+          regeneratingSlots: new Set(),
           error: null,
         });
       } catch (e) {
         const message = e instanceof Error ? e.message : "Unknown error";
-        setState((s) => ({ ...s, stage: "plan-ready", error: message }));
+        setState((s) => ({
+          ...s,
+          stage: "plan-ready",
+          regeneratingSlots: new Set(),
+          error: message,
+        }));
       }
     },
     [state.weekPlan, state.selectedSlots],
@@ -192,6 +203,7 @@ export function useMealPlanGeneration(): UseMealPlanGenerationReturn {
     stage: state.stage,
     weekPlan: state.weekPlan,
     selectedSlots: state.selectedSlots,
+    regeneratingSlots: state.regeneratingSlots,
     error: state.error,
     generatePlan,
     confirmPlan,

@@ -27,6 +27,7 @@ export function GenerateSection({
     stage,
     weekPlan,
     selectedSlots,
+    regeneratingSlots,
     error,
     generatePlan,
     confirmPlan,
@@ -96,8 +97,46 @@ export function GenerateSection({
     );
   }
 
-  // Generating plan - show skeleton
+  // Generating plan - show skeleton (partial or full)
   if (stage === "generating-plan") {
+    const isPartialRegeneration = regeneratingSlots.size > 0 && weekPlan;
+
+    if (isPartialRegeneration) {
+      // Partial regeneration: show plan with loading cells + disabled buttons
+      return (
+        <div className="space-y-6">
+          <div className="p-4 rounded-lg border border-border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-medium">{t("result.mealPlan")}</h3>
+              <span className="text-sm text-muted">
+                {t("loading.generating")}
+              </span>
+            </div>
+            <MealPlanView
+              weekPlan={weekPlan}
+              loadingSlots={regeneratingSlots}
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              disabled
+              className="flex-1 h-12 rounded-lg bg-card font-medium transition-colors flex items-center justify-center opacity-70 cursor-not-allowed"
+            >
+              <span className="inline-block w-5 h-5 border-2 border-muted border-t-foreground rounded-full animate-spin" />
+            </button>
+            <button
+              disabled
+              className="flex-1 h-12 rounded-lg bg-accent font-medium text-white transition-colors opacity-50 cursor-not-allowed"
+            >
+              {t("generation.acceptPlan")}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // Full regeneration: show skeleton
     return (
       <div className="space-y-4">
         <p className="text-center text-muted">{t("loading.generating")}</p>

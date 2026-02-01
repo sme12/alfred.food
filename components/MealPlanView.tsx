@@ -12,6 +12,7 @@ interface MealPlanViewProps {
   weekPlan: DayPlan[];
   selectable?: boolean;
   selectedSlots?: Set<string>;
+  loadingSlots?: Set<string>;
   onToggle?: (day: Day, meal: Meal) => void;
 }
 
@@ -21,11 +22,30 @@ interface MealCellProps {
   meal: MealItem | null;
   selectable?: boolean;
   isSelected?: boolean;
+  isLoading?: boolean;
   onToggle?: () => void;
 }
 
-function MealCell({ meal, selectable, isSelected, onToggle }: MealCellProps) {
+function MealCell({
+  meal,
+  selectable,
+  isSelected,
+  isLoading,
+  onToggle,
+}: MealCellProps) {
   const t = useTranslations("result");
+
+  // Loading state - show skeleton
+  if (isLoading) {
+    return (
+      <div className="w-full h-full p-2 min-h-13 min-w-24">
+        <div className="animate-pulse space-y-2">
+          <div className="h-4 bg-card rounded w-3/4" />
+          <div className="h-3 bg-card rounded w-1/2" />
+        </div>
+      </div>
+    );
+  }
 
   if (!meal) {
     return (
@@ -85,6 +105,7 @@ export function MealPlanView({
   weekPlan,
   selectable,
   selectedSlots,
+  loadingSlots,
   onToggle,
 }: MealPlanViewProps) {
   const t = useTranslations();
@@ -130,6 +151,7 @@ export function MealPlanView({
                 {MEALS.map((meal) => {
                   const slotKey = `${day}-${meal}`;
                   const isSelected = selectedSlots?.has(slotKey) ?? false;
+                  const isLoading = loadingSlots?.has(slotKey) ?? false;
                   return (
                     <td
                       key={meal}
@@ -139,6 +161,7 @@ export function MealPlanView({
                         meal={dayPlan?.[meal] ?? null}
                         selectable={selectable}
                         isSelected={isSelected}
+                        isLoading={isLoading}
                         onToggle={
                           selectable && onToggle
                             ? () => onToggle(day, meal)
